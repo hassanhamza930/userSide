@@ -1,16 +1,18 @@
 import 'dart:io';
-
+import "package:multi_sort/multi_sort.dart";
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:userside/pages/celebrity/celebrityVideoFinalize.dart';
-import 'package:userside/pages/home/celebrityProfile/payment/orderDetails.dart';
 import 'package:userside/pages/home/celebrityProfile/sendMessage/celebrityChat.dart';
+import 'package:userside/services/downloadVideo.dart';
 import 'package:userside/util/components.dart';
 import 'package:userside/util/styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -243,7 +245,6 @@ class _completedRowState extends State<completedRow> {
                           child: GestureDetector(
                             onTap: (){
 
-
                               if(widget.type=="dm"){
                                 Navigator.push(context, CupertinoPageRoute(builder: (context){
                                   return celebrityChat(celebId: widget.celebrity ,isCelebrity: false,willShow: false,);
@@ -330,35 +331,37 @@ class _completedRowState extends State<completedRow> {
 
                                                           showLoading(context: context);
 
-                                                            Directory appDocDir = await getApplicationDocumentsDirectory();
-                                                            File downloadToFile = File('${appDocDir.path}/${DateTime.now().millisecond}.mp4');
+                                                          var requestsDocID=widget.docId;  //"IdTC7xSaboTwKbwyJH7uoXqCdHn2i3r7x867oGQkW4mqi60YLknIll93videoRequest";
+                                                          var vidId=widget.celebrity;   //"IdTC7xSaboTwKbwyJH7uoXqCdHn2";
 
-                                                            try {
-                                                              await FirebaseStorage.instance
-                                                                  .ref('requests/${widget.docId}/${widget.celebrity}')
-                                                                  .writeToFile(downloadToFile);
-                                                            } on FirebaseException catch (e) {
-                                                              showErrorDialogue(context: context, message: e);
+                                                          var extStorage;
+
+                                                          if(Platform.isAndroid)
+                                                            {
+                                                              extStorage=await getExternalStorageDirectory();
                                                             }
-
-                                                            final FlutterFFmpeg _flutterFFmpeg = new FlutterFFmpeg();
-
-
-                                                          // String appDocumentsPath = '/storage/emulated/0/Documents';
-                                                          Directory appDir= await getApplicationDocumentsDirectory();
-                                                          String appDocumentsPath = appDir.path;
-                                                          String filePath = '$appDocumentsPath/${DateTime.now().millisecond}.mp4';
-                                                          File f = await getImageFileFromAssets('logoSmall.png');
+                                                          else if(Platform.isIOS){
+                                                            extStorage=await getApplicationDocumentsDirectory();
+                                                          }
 
 
+                                                          var dio = Dio();
+
+                                                          var response = await downloadVideo(
+                                                              Dio(),
+                                                              'https://us-central1-funnel-887b0.cloudfunctions.net/watermarkVideo?req=$requestsDocID&vid=$vidId',
+                                                              '${extStorage.path}/$requestsDocID.mp4');
+
+                                                          print(response);
 
 
-                                                            await _flutterFFmpeg.execute('-i ${downloadToFile.path} -i ${f.path} -vcodec mpeg4 -pix_fmt yuva420p -acodec aac -filter_complex overlay=(W-w)/2:(H-h)/1.2 ${filePath}').then((rc)=>print(rc));
-                                                            print("filePath is");
-                                                            print(filePath);
+
+
                                                           Navigator.pop(context);
 
-                                                            showMessage(context: context, message: "Successfully Saved");
+                                                          response=="ok"?
+                                                          showMessage(context: context, message: "Successfully Saved")
+                                                              :showMessage(context: context,message:"There was an error Kindly try again.");
 
 
 
@@ -368,7 +371,7 @@ class _completedRowState extends State<completedRow> {
 
 
                                                         },
-                                                        child: Icon(Icons.download,color: Colors.white,size: 50,),
+                                                        child: Icon(Icons.download,color: Colors.white,size: 30,),
                                                       )
                                                   ),
                                                 ),
@@ -381,8 +384,6 @@ class _completedRowState extends State<completedRow> {
 
                                     });
                               }
-
-
 
                             },
                             child: Container(
@@ -462,12 +463,21 @@ class _completedState extends State<completed> {
     var height=MediaQuery.of(context).size.height;
 
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.topCenter, 
       child: StreamBuilder(
           stream: FirebaseFirestore.instance.collection("requests").where("user",isEqualTo: FirebaseAuth.instance.currentUser.uid.toString()).where("type",isNotEqualTo:"eventBooking").where("status",isEqualTo: "complete").snapshots(),
           builder: (context, snapshot) {
             if(snapshot.hasData){
               List<DocumentSnapshot> docs= snapshot.data.docs;
+
+              docs.sort((m1, m2) {
+                var r = m1["createdAt"].compareTo(m2["createdAt"]);
+                if (r != 0) return r;
+                return m1["createdAt"].compareTo(m2["createdAt"]);
+              });
+
+              docs=docs.reversed.toList(growable:true);
+
               return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -475,7 +485,6 @@ class _completedState extends State<completed> {
                 itemBuilder: (context,index){
                   Map data=docs[index].data();
                   bool reviewed=data["reviewed"]==null?false:data["reviewed"];
-
 
                   return completedRow(vidLink:data["vidSrc"],type: data["type"],celebrity: data["celebrity"],user: data["user"],createdAt: data["createdAt"],status: data["status"],reviewed: reviewed,docId: docs[index].id,);
                 },

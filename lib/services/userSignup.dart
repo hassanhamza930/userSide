@@ -23,10 +23,10 @@ class UserSignupService {
       };
     }
 
-    if(DateTime.now().difference(dob).inDays<3650){
+    if(DateTime.now().difference(dob).inDays<5840){
       return {
         "user":null,
-        "message":"You must be over 18 to login"
+        "message":"You must be over 16 to Signup."
       };
     }
 

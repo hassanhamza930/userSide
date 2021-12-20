@@ -46,7 +46,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     child: Container(
                       width:MediaQuery.of(context).size.width*0.89,
                       child: Text(
-                        "Please enter your email adress,\nYou will recieve a link to create a\nnew password via email",
+                        "Please enter your email address,\nYou will receive a link to create a\nnew password via email.",
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontFamily: "Avenir",

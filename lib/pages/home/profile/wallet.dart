@@ -1,4 +1,3 @@
-import 'package:userside/pages/home/celebrityProfile/payment/orderDetails.dart';
 import 'package:userside/pages/home/home.dart';
 import 'package:userside/pages/home/profile/wallet.dart';
 import 'package:userside/pages/home/profile/withdraw.dart';
@@ -104,7 +103,7 @@ class _walletState extends State<wallet> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                  "Total Earnings",
+                                                  "Total Balance",
                                                   style: TextStyle(
                                                       color: Color.fromRGBO(44,255,244,1),
                                                       fontSize: 20,
@@ -112,7 +111,7 @@ class _walletState extends State<wallet> {
                                                   )
                                               ),
                                               Text(
-                                                  "All Earnings from completed requests",
+                                                  "All Refunds and Bonuses.",
                                                   style: TextStyle(
                                                       color: Colors.white.withOpacity(0.87),
                                                       fontSize: 14,

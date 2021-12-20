@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import "package:flutter/material.dart";
-import "package:flutter/cupertino.dart";import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import "package:flutter/cupertino.dart";
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -91,25 +91,6 @@ class _celebrityVideoFinalizeState extends State<celebrityVideoFinalize> {
                         size: 30,
                       ),
                       onPressed: ()async {
-
-                        showLoading(context: context);
-                        final FlutterFFmpeg _flutterFFmpeg = new FlutterFFmpeg();
-
-
-                        String appDocumentsPath = '/storage/emulated/0/Documents';
-                        String filePath = '$appDocumentsPath/${DateTime.now().millisecond}.mp4';
-                        File f = await getImageFileFromAssets('logoSmall.png');
-
-
-
-
-
-
-                        await _flutterFFmpeg.execute('-i ${widget.finalPath} -i ${f.path} -vcodec mpeg4 -pix_fmt yuva420p -acodec aac -filter_complex overlay=(W-w)/2:(H-h)/1.2 $filePath').then((rc)=>print(rc));
-
-                        print("filePath is");
-                        print(filePath);
-                        Navigator.pop(context);
 
 
 

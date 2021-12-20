@@ -5,7 +5,7 @@ import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";import '../../../../util/components.dart';
 import 'featuredVibeContainer.dart';
 import 'celebrityContainer.dart';
-import '../../featuredVideoPlayer/featuredVideoPlayer.dart';
+import "featuredVibeContainer.dart";
 import 'package:flutter/cupertino.dart';
 
 var currentPage=0;

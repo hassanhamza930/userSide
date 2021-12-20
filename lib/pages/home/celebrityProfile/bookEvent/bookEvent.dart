@@ -10,7 +10,6 @@ import 'package:userside/pages/home/celebrityProfile/requestVideo/requestVideo.d
 import 'package:userside/pages/home/celebrityProfile/sendMessage/celebrityChat.dart';
 import 'package:userside/pages/home/featuredVideoPlayer/fanClub.dart';
 import 'package:userside/pages/home/home.dart' as Home;
-import 'package:userside/pages/home/videoPlayer/videoPlayer.dart';
 import 'package:userside/services/addNotifications.dart';
 import 'package:userside/services/addRequest.dart';
 import 'package:userside/services/addTransaction.dart';
@@ -318,7 +317,7 @@ class _bookEventState extends State<bookEvent> {
                           DatePicker.showDatePicker(context,
                               showTitleActions: true,
                               minTime: DateTime(1960, 1, 1),
-                              maxTime: DateTime(2021, 8, 20), onChanged: (date) {
+                              maxTime: DateTime.now().add(Duration(days: 365)), onChanged: (date) {
                                 print('change $date');
                               }, onConfirm: (dat) {
                                 setState(() {
@@ -721,7 +720,7 @@ class _bookEventState extends State<bookEvent> {
                       Container(
                         padding: EdgeInsets.only(left: 10, bottom: 10),
                         child: Text(
-                          "Quotation",
+                          "Budget",
                           style: smallBold(color: Colors.white),
                         ),
                       ),

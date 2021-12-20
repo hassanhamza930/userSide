@@ -1,6 +1,5 @@
 import 'package:userside/pages/home/celebrityProfile/requestVideo/requestVideo.dart';
 import 'package:userside/pages/home/celebrityProfile/sendMessage/celebrityChat.dart';
-import 'package:userside/pages/home/videoPlayer/videoPlayer.dart';
 import 'package:userside/util/styles.dart';
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -51,30 +50,7 @@ celebButton({@required String label,@required BuildContext context,@required Col
   );
 }
 
-demoVideo({@required BuildContext context,@required String preview}){
-  return GestureDetector(
-    onTap:(){
-      Navigator.push(
-          context,
-          CupertinoPageRoute(
-              builder: (context){
-                return videoPlayer();
-              }
-          )
-      );
-    },
-    child: Container(
 
-        padding: EdgeInsets.all(10),
-       // height: 500,
-        //width: MediaQuery.of(context).size.width*0.5,
-        child: Image.asset(
-          preview,
-          fit: BoxFit.cover,
-        )
-    ),
-  );
-}
 
 
 

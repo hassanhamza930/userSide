@@ -291,11 +291,6 @@ class _SignUpState extends State<SignUp> {
 
                                 Navigator.of(context).pop();
 
-                                // Navigator.pushReplacement(context,
-                                // CupertinoPageRoute(builder: (context) {
-                                // return NotificationPermission();
-                                // }));
-
                                 Navigator.of(context)
                                     .pushAndRemoveUntil(
                                     CupertinoPageRoute(builder: (context){
@@ -307,7 +302,6 @@ class _SignUpState extends State<SignUp> {
                                 await addToWallet(amount: 15, id: referral.text.trim(), type: "users");
                                 }
                                 }
-
                                 else {
                                   Navigator.of(context).pop();
                                   showErrorDialogue(context: context, message: "${response == null ? "Kindly Fill All Fields Properly" : response["message"]}");

@@ -1,9 +1,7 @@
 import 'package:userside/pages/home/celebrityProfile/celebrityProfilePage.dart';
-import 'package:userside/pages/home/celebrityProfile/payment/orderDetails.dart';
 import 'package:userside/pages/home/requests/booking.dart';
 import 'package:userside/pages/home/requests/completed.dart';
 import 'package:userside/pages/home/requests/pending.dart';
-import 'package:userside/pages/home/videoPlayer/videoPlayer.dart';
 import 'package:userside/util/components.dart';
 import 'package:userside/util/styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

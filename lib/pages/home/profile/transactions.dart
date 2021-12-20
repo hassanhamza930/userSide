@@ -1,4 +1,3 @@
-import 'package:userside/pages/home/celebrityProfile/payment/orderDetails.dart';
 import 'package:userside/pages/home/home.dart';
 import 'package:userside/pages/home/profile/invites.dart';
 import 'package:userside/pages/home/profile/wallet.dart';

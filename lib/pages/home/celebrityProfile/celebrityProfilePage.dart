@@ -8,7 +8,6 @@ import 'package:userside/pages/home/featuredVideoPlayer/fanClub.dart';
 import 'package:userside/pages/home/featuredVideoPlayer/featuredVideoPlayer.dart';
 import 'package:userside/pages/home/home.dart' as Home;
 import 'package:userside/pages/home/home.dart';
-import 'package:userside/pages/home/videoPlayer/videoPlayer.dart';
 import 'package:userside/services/dynamicLinks.dart';
 import 'package:userside/util/components.dart';
 import 'package:userside/util/styles.dart';

@@ -1,10 +1,10 @@
+import 'package:userside/pages/home/featured/featured.dart';
 import 'package:userside/pages/home/notifications/notifications.dart';
 import 'package:userside/pages/home/profile/profile.dart';
 import 'package:userside/pages/home/requests/requests.dart';
-
-import 'featured/featured.dart';
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
+
 var pages=[
   Featured(),
   requests(),

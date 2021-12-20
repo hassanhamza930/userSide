@@ -65,7 +65,7 @@ class _signupOptionsState extends State<signupOptions> {
                     //                           return SignUp();
                     //                         })
                     //                       );
-                    boxyButton(text: "Create a User Account", color: Colors.white, bg: Colors.orange, onPress: (){
+                    boxyButton(text: "Create User Account", color: Colors.white, bg: Colors.orange, onPress: (){
                       Navigator.push(
                           context,
                           CupertinoPageRoute(builder: (context){

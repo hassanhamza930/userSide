@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:userside/pages/home/celebrityProfile/payment/orderDetails.dart';
 import 'package:userside/pages/home/home.dart';
 import 'package:userside/pages/home/profile/wallet.dart';
 import 'package:userside/pages/home/profile/withdraw.dart';

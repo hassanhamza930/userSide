@@ -289,6 +289,10 @@ class _editProfileState extends State<editProfile> {
 
                                 try{
 
+
+                                  var credential=EmailAuthProvider.credential(email: email.text, password: password.text);
+                                  print(credential);
+                                  await FirebaseAuth.instance.currentUser.reauthenticateWithCredential(credential);
                                   await FirebaseAuth.instance.currentUser.updateEmail(email.text);
                                   await FirebaseAuth.instance.currentUser.updateDisplayName(fullName.text);
                                   await FirebaseAuth.instance.currentUser.updatePassword(password.text);

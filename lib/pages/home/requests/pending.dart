@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:userside/pages/home/celebrityProfile/payment/orderDetails.dart';
 import 'package:userside/pages/home/featuredVideoPlayer/components/panel.dart';
 import 'package:userside/services/addNotifications.dart';
 import 'package:userside/services/addTransaction.dart';

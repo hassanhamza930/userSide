@@ -41,7 +41,11 @@ class _celebrityChatState extends State<celebrityChat> {
   showOneTimePromo() async {
     messageText.clear();
     Future.delayed(Duration(seconds: 1), () {
-      messagesScrollController.jumpTo(messagesScrollController.position.maxScrollExtent);
+      messagesScrollController.animateTo(
+          messagesScrollController.position.maxScrollExtent,
+          curve: Curves.easeInOut,
+          duration: Duration(seconds: 1)
+      );
     });
 
     if (widget.isCelebrity == false && widget.willShow==true) {
