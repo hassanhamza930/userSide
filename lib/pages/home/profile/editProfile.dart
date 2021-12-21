@@ -307,7 +307,7 @@ class _editProfileState extends State<editProfile> {
                                         "password":password.text,
                                         "phone": "0${phone.text}",
                                         "username":username.text,
-                                        "notificationsPermission":noti,
+                                        "notificationPermission":noti,
                                         "email":email.text
                                       }
                                       ,SetOptions(merge:true)

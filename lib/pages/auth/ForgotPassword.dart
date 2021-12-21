@@ -1,7 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:userside/pages/auth/createNewPass.dart';
 import 'package:userside/pages/home/home.dart';
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";import 'package:flutter/cupertino.dart';
+import 'package:userside/util/components.dart';
+
+
+var email=TextEditingController(text: "");
 
 
 class ForgotPassword extends StatefulWidget {
@@ -76,12 +81,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             labelStyle: TextStyle(color: Colors.white,fontFamily:'Avenir'),
                             focusedBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,
-                            contentPadding:
-                            EdgeInsetsDirectional.only(start: 20.0),
+                            contentPadding: EdgeInsetsDirectional.only(start: 20.0),
                           ),
-                          onChanged: (_onChanged) {
-                            print(_onChanged);
-                          },
+                          controller: email,
                           keyboardType: TextInputType.text,
                         ),
                       ),
@@ -89,10 +91,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                   SizedBox(height: 50,),
                   GestureDetector(
-                    onTap: (){
-                      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context){
-                        return Home();
-                      }));
+                    onTap: ()async{
+                      showLoading(context: context);
+                    try{
+                      await FirebaseAuth.instance.sendPasswordResetEmail(email: email.text );
+                      Navigator.pop(context);
+                      showMessage(context: context, message: "Email for password reset is sent.");
+                      print('sent');
+                    }
+                    catch(e){
+                      Navigator.pop(context);
+                      showMessage(context: context, message: e.message);
+                    }
                     },
                     child: Center(
                       child: Center(
@@ -125,33 +135,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ),
                   ),
                   SizedBox(height: 50,),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context){
-                        return createNewPass();
-                      }));
-                    },
-                    child: Center(
-                      child: Center(
-                        child: Container(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          //height: 50,
-                          child: Center(
-                            child: Text(
-                              "Testing Create New Pass",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: "Avenir",
-                                fontSize: 17,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
