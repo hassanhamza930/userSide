@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">948800714095-hr1g8553ve0lqfgmnipa3nmqv2v6d5n1.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://funnel-887b0.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">948800714095</string>
+    <string name="google_api_key" translatable="false">AIzaSyDg8mAdbFunrN__gJ4ea_AHryJWAm_hM_o</string>
+    <string name="google_app_id" translatable="false">1:948800714095:android:d0a8ad5421254c433ba49a</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDg8mAdbFunrN__gJ4ea_AHryJWAm_hM_o</string>
+    <string name="google_storage_bucket" translatable="false">funnel-887b0.appspot.com</string>
+    <string name="project_id" translatable="false">funnel-887b0</string>
+</resources>

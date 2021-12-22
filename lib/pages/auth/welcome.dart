@@ -1,7 +1,6 @@
 import 'package:userside/pages/auth/Login.dart';
 import 'package:userside/pages/auth/signUp.dart';
 import 'package:userside/pages/auth/signupOptions.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:userside/util/components.dart';
 import 'package:userside/util/styles.dart';
 import 'package:flutter/material.dart';

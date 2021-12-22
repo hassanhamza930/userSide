@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.brackets.userside.userside">
-   <application
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <application
         android:label="userside"
         android:icon="@mipmap/ic_launcher">
 
@@ -19,6 +21,7 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+
             <!-- Displays an Android View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash
                  screen fades out. A splash screen is useful to avoid any visual
@@ -38,6 +41,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyCGvQ64K_6CXy7Djzc-DF0W7CHCrJq393A"/>
     </application>
 
 </manifest>
