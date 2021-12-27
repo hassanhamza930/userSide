@@ -113,6 +113,42 @@ class _nextState extends State<next> {
 
 
 
+class back extends StatefulWidget {
+
+  @override
+  _backState createState() => _backState();
+}
+
+class _backState extends State<back> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(30),
+      child: Align(
+        alignment:Alignment.bottomLeft,
+        child: TextButton(
+          onPressed: (){
+            pageControl.animateToPage(pageControl.page.ceil()-1, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+          },
+          style:ButtonStyle(
+              backgroundColor:MaterialStateProperty.all(Colors.orange),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                  )
+              )
+          ),
+          child: Icon(Icons.keyboard_arrow_left,size:50,color: Colors.white),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
 
 
 class bookEvent extends StatefulWidget {
@@ -504,7 +540,13 @@ class _bookEventState extends State<bookEvent> {
                                     ),
                                   ],
                                 ),
-                                next()
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    back(),
+                                    next(),
+                                  ],
+                                )
                               ],
                             ),
                             Column(
@@ -759,7 +801,13 @@ class _bookEventState extends State<bookEvent> {
                                     controller: numberOfGuests,
                                     numeric: true
                                 ),
-                                next()
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    back(),
+                                    next(),
+                                  ],
+                                )
                               ],
                             ),
                             Column(
@@ -773,7 +821,7 @@ class _bookEventState extends State<bookEvent> {
                                 ),
                                 SizedBox(height: 20),
                                 inputFieldExpanded(
-                                    label: "Any other engagements",
+                                    label: "Any other engagements (Optional)",
                                     context: context,
                                     onChange: (e) {},
                                     controller: anyOtherEngagements
@@ -799,6 +847,7 @@ class _bookEventState extends State<bookEvent> {
                                     ),
                                   ],
                                 ),
+                                back(),
                                 SizedBox(
                                   height: 40,
                                 ),
@@ -806,9 +855,8 @@ class _bookEventState extends State<bookEvent> {
                                   width: width * 0.8,
                                   child: GestureDetector(
                                     onTap: ()async{
-
                                       if(
-                                      fullName.text != "" &&
+                                          fullName.text != "" &&
                                           phoneNumber.text != ""  &&
                                           email.text != ""
                                           && organization.text != ""
@@ -823,7 +871,6 @@ class _bookEventState extends State<bookEvent> {
                                           &&venueName.text!=""
                                           &&numberOfGuests.text!=""
                                           &&reasonForAppearance.text!=""
-                                          &&anyOtherEngagements.text !=""
                                           && quotation.text!=""
                                       ){
 

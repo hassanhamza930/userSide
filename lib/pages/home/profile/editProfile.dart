@@ -139,7 +139,6 @@ class _editProfileState extends State<editProfile> {
                                 try{
                                   XFile image;
                                   showLoading(context: context);
-
                                   await ImagePicker().pickImage(source: ImageSource.gallery,).then((value) {
                                     setState(() {
                                       image = value;
