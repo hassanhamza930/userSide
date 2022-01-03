@@ -112,7 +112,7 @@ class _bookingDetailsState extends State<bookingDetails> {
             var numberOfGuests=TextEditingController(text:data["numberOfGuests"]);
             var reasonForAppearance=TextEditingController(text:data["reasonForAppearance"]);
             var anyOtherEngagements=TextEditingController(text:data["anyOtherEngagements"]);
-            var quotation=TextEditingController(text:"${data["quotation"]}");
+            var quotation=TextEditingController(text:"${data["amount"]}");
             messageForCelebrity=TextEditingController(text:"${data["celebrityMessage"]}");
 
 
@@ -741,7 +741,7 @@ class _bookingDetailsState extends State<bookingDetails> {
 
                                                                                 await addToWallet(amount: amount * 0.7, id: widget.celebrity, type: "celebrities");
 
-                                                                                await addTransaction(discount: discountedAmount,flow: "out", message: "Event Booking", to: widget.celebrity, from: FirebaseAuth.instance.currentUser.uid, amount: ( amount));
+                                                                                await addTransaction(message: "Event Booking", to: widget.celebrity, from: FirebaseAuth.instance.currentUser.uid, amount: ( amount));
 
                                                                                 await addNotifications(type:"eventBooking",target: "celebrity", message: "${userData["fullName"]} has accepted your offer, You have recieved ${amount*0.7} GHS for an event booking", from: FirebaseAuth.instance.currentUser.uid , to: widget.celebrity);
 
@@ -793,7 +793,7 @@ class _bookingDetailsState extends State<bookingDetails> {
                                                       showLoading(context: context);
 
 
-                                                      var response=await http.get(Uri.parse("https://us-central1-funnel-887b0.cloudfunctions.net/getPaymentPage"),headers: {"name":data["fullName"],"amount": "${double.parse(quotation.text)*100}"});
+                                                      var response=await http.get(Uri.parse("https://us-central1-funnel-887b0.cloudfunctions.net/getPaymentPage"),headers: {"name":data["fullName"],"amount": "${double.parse("${quotation.text}")*100}"});
                                                       var responseData=jsonDecode(response.body);
 
                                                       var slug=responseData["data"]["slug"];
@@ -822,15 +822,39 @@ class _bookingDetailsState extends State<bookingDetails> {
                                                                             try {
                                                                               Map userData = await getUserData(id: FirebaseAuth.instance.currentUser.uid);
 
-                                                                              await addToWallet(amount: double.parse( quotation.text) * 0.7, id: widget.celebrity, type: "celebrities");
+                                                                              await addToWallet(
+                                                                                  amount: double.parse( quotation.text) * 0.7,
+                                                                                  id: widget.celebrity,
+                                                                                  type: "celebrities"
+                                                                              );
 
-                                                                              await addTransaction(flow: "out", message: "Event Booking", to: widget.celebrity, from: FirebaseAuth.instance.currentUser.uid, amount: ( double.parse(quotation.text)));
+                                                                              await addTransaction(
+                                                                                  message: "Event Booking",
+                                                                                  to: "letsvibe",
+                                                                                  from: FirebaseAuth.instance.currentUser.uid,
+                                                                                  amount: double.parse(quotation.text),
+                                                                                  personId: FirebaseAuth.instance.currentUser.uid
+                                                                              );
 
-                                                                              await addNotifications(type:"eventBooking",target: "celebrity", message: "${userData["fullName"]} has accepted your offer, You have recieved ${double.parse(quotation.text)*0.7} GHS for an event booking", from: FirebaseAuth.instance.currentUser.uid , to: widget.celebrity);
+                                                                              await addTransaction(
+                                                                                  message: "Event Booking",
+                                                                                  to: widget.celebrity,
+                                                                                  from: "letsvibe",
+                                                                                  amount: (double.parse(quotation.text)*0.7).floorToDouble(),
+                                                                                  personId: widget.celebrity,
+                                                                              );
+
+                                                                              await addNotifications(
+                                                                                  type:"eventBooking",
+                                                                                  target: "celebrity",
+                                                                                  message: "${userData["fullName"]} has accepted your offer, You have recieved ${double.parse(quotation.text)*0.7} GHS for an event booking",
+                                                                                  from: FirebaseAuth.instance.currentUser.uid ,
+                                                                                  to: widget.celebrity
+                                                                              );
 
                                                                               await FirebaseFirestore.instance.collection('requests').doc(widget.docId).set(
                                                                                   {
-                                                                                    "status":"accepted"
+                                                                                    "status":"complete"
                                                                                   },
                                                                                   SetOptions(merge: true)
                                                                               );
@@ -900,15 +924,20 @@ class _bookingDetailsState extends State<bookingDetails> {
                               onTap: ()async{
 
 
-                                FirebaseFirestore.instance.collection("requests").doc(widget.docId).set(
-                                    {
-                                      "status":"rejected",
-                                    },
-                                    SetOptions(merge: true)
+                                Navigator.pop(context);
+
+                                await addNotifications(
+                                    target: "celebrity",
+                                    message: "A user rejected your event booking offer.",
+                                    from: FirebaseAuth.instance.currentUser.uid,
+                                    to: data["celebrity"],
+                                    type: "eventBooking"
                                 );
 
+                                await FirebaseFirestore.instance.collection("requests").doc(widget.docId).delete();
 
-                                Navigator.pop(context);
+
+
 
 
                               },
@@ -1088,7 +1117,7 @@ class _completedDetailsState extends State<completedDetails> {
             var numberOfGuests=TextEditingController(text:data["numberOfGuests"]);
             var reasonForAppearance=TextEditingController(text:data["reasonForAppearance"]);
             var anyOtherEngagements=TextEditingController(text:data["anyOtherEngagements"]);
-            var quotation=TextEditingController(text:"${data["quotation"]}");
+            var quotation=TextEditingController(text:"${data["amount"]}");
 
 
 

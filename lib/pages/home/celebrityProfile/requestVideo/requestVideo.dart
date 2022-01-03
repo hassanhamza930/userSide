@@ -325,6 +325,7 @@ class _requestVideoState extends State<requestVideo> {
 
                                 if (checkRequestResponse!="error"){
                                   Navigator.pop(context);
+
                                   showDialog(
                                       context: context,
                                       builder: (context) {
@@ -378,16 +379,16 @@ class _requestVideoState extends State<requestVideo> {
 
                                                         if(promoResponse["message"]=="ok"){
 
-                                                          var discount= int.parse(promoResponse["promo"]["promoDiscount"]);
+                                                          var discount= double.parse(promoResponse["promo"]["promoDiscount"]);
                                                           var discountPercentage=(1- (discount/100));
-                                                          var amount=double.parse(data["videoRequest"]["price"]);
-                                                          amount=amount*discountPercentage;
-                                                          var discountedAmount=double.parse(data["videoRequest"]["price"])*(double.parse(promoResponse["promo"]["promoDiscount"])/100);
+                                                          var amount=double.parse(data["videoRequest"]["price"])*100;
+                                                          var discountedAmount=(amount*discountPercentage);
+                                                          var discountGiven= (amount-(amount*discountPercentage))/100;
 
 
                                                           print('ifed');
 
-                                                          var response=await http.get(Uri.parse("https://us-central1-funnel-887b0.cloudfunctions.net/getPaymentPage"),headers: {"name":data["fullName"],"amount": "${amount *100 }"});
+                                                          var response=await http.get(Uri.parse("https://us-central1-funnel-887b0.cloudfunctions.net/getPaymentPage"),headers: {"name":data["fullName"],"amount": "${discountedAmount}"});
                                                           var responseData=jsonDecode(response.body);
 
                                                           var slug=responseData["data"]["slug"];
@@ -416,7 +417,13 @@ class _requestVideoState extends State<requestVideo> {
                                                                                 try {
                                                                                   Map userData = await getUserData(id: FirebaseAuth.instance.currentUser.uid);
 
-                                                                                  await addTransaction(discount: discountedAmount,flow: "out", message: "Video Request", to: widget.celebId, from:FirebaseAuth.instance.currentUser.uid , amount: ( (double.parse("${data["videoRequest"]["price"]  }"))));
+                                                                                  await addTransaction(
+                                                                                      message: "Video Request",
+                                                                                      to: "letsvibe",
+                                                                                      from: FirebaseAuth.instance.currentUser.uid ,
+                                                                                      amount: double.parse("${discountedAmount/100}").floorToDouble(),
+                                                                                      personId: FirebaseAuth.instance.currentUser.uid
+                                                                                  );
 
                                                                                   await addNotifications(type:"videoRequest",target: "celebrity", message: "${userData["fullName"]} has made a video request", String: String, from: FirebaseAuth.instance.currentUser.uid, to: widget.celebId );
 
@@ -425,7 +432,8 @@ class _requestVideoState extends State<requestVideo> {
                                                                                       celebrityId: widget.celebId,
                                                                                       userId: FirebaseAuth.instance.currentUser.uid,
                                                                                       type: "videoRequest",
-                                                                                      amount:(double.parse("${data["videoRequest"]["price"]}")  ),
+                                                                                      amount: double.parse("${discountedAmount/100}").floorToDouble(),
+                                                                                      discount: discountGiven,
                                                                                       theirName: theirName.text,
                                                                                       yourName: myName.text,
                                                                                       videoDate: date,
@@ -508,9 +516,14 @@ class _requestVideoState extends State<requestVideo> {
                                                                               try {
                                                                                 Map userData = await getUserData(id: FirebaseAuth.instance.currentUser.uid);
 
-                                                                                // await addToWallet(amount: ((amount.toDouble()) / 100) * 0.7, id: celebrity, type: "celebrities");
 
-                                                                                await addTransaction(flow: "out", message: "Video Request", to: widget.celebId, from:FirebaseAuth.instance.currentUser.uid , amount: ( (double.parse("${data["videoRequest"]["price"]  }")) ));
+                                                                                await addTransaction(
+                                                                                    message: "Video Request",
+                                                                                    to: "letsvibe",
+                                                                                    from:FirebaseAuth.instance.currentUser.uid ,
+                                                                                    personId: FirebaseAuth.instance.currentUser.uid ,
+                                                                                    amount: ( (double.parse("${data["videoRequest"]["price"]  }")) )
+                                                                                );
 
 
                                                                                 await addNotifications(type:"videoRequest",target: "celebrity", message: "${userData["fullName"]} has made a video Request", String: String, from: FirebaseAuth.instance.currentUser.uid, to: widget.celebId );
@@ -521,13 +534,14 @@ class _requestVideoState extends State<requestVideo> {
                                                                                     userId: FirebaseAuth.instance.currentUser.uid,
                                                                                     type: "videoRequest",
                                                                                     amount:(double.parse("${data["videoRequest"]["price"]}")  ),
+                                                                                    discount: 0,
                                                                                     theirName: theirName.text,
                                                                                     yourName: myName.text,
                                                                                     videoDate: date,
                                                                                     videoFor: currentItem,
                                                                                     videoMessage: celebrityRequest.text,
                                                                                     videoPerson: currentTab==0?"someone":"myself",
-                                                                                    private: private
+                                                                                    private: private,
                                                                                 );
 
                                                                                 Navigator.pop(context);

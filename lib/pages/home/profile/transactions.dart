@@ -11,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 
 class transactionRow extends StatefulWidget {
 
-  final String flow;
   final String message;
   final String to;
   final String from;
@@ -24,7 +23,6 @@ class transactionRow extends StatefulWidget {
     this.message,
     this.from,
     this.to,
-    this.flow,
     this.createdAt
 });
 
@@ -69,14 +67,14 @@ class _transactionRowState extends State<transactionRow> {
                               color: Colors.orange,
                               borderRadius: BorderRadius.all(Radius.circular(30))
                           ) ,
-                          child: Center(child: Icon(widget.flow=="in"?Icons.arrow_downward:Icons.arrow_upward,color: Colors.black,size: 20,))),
+                          child: Center(child: Icon(widget.to==FirebaseAuth.instance.currentUser.uid?Icons.arrow_downward:Icons.arrow_upward,color: Colors.black,size: 20,))),
                       SizedBox(width: 10,),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("${widget.message}",style: smallBold(color: Colors.white),textAlign: TextAlign.left,),
-                            Text("${widget.flow=="in"?"Debited":"Credited"} on: ${widget.createdAt.toDate()}",style: small(color: Colors.white),textAlign: TextAlign.left,)
+                            Text("${widget.to==FirebaseAuth.instance.currentUser.uid?"Debited":"Credited"} on: ${widget.createdAt.toDate().toString().split(" ")[0]}",style: small(color: Colors.white),textAlign: TextAlign.left,)
                           ],
                         ),
                       ),
@@ -166,7 +164,7 @@ class _transactionsState extends State<transactions> {
                     ),
                    SizedBox(height: 30,),
                    StreamBuilder(
-                     stream: FirebaseFirestore.instance.collection("transactions").where("from",isEqualTo: FirebaseAuth.instance.currentUser.uid).snapshots(),
+                     stream: FirebaseFirestore.instance.collection("transactions").where("personId",isEqualTo: FirebaseAuth.instance.currentUser.uid).snapshots(),
                      builder: (context, snapshot) {
 
                        if(snapshot.hasData){
@@ -187,7 +185,7 @@ class _transactionsState extends State<transactions> {
 
                                var currentDoc=docsData[index];
 
-                               return transactionRow(message: currentDoc["message"],createdAt: currentDoc["createdAt"],amount: currentDoc["amount"],flow: currentDoc["flow"],from: currentDoc["from"],to: currentDoc["to"],);
+                               return transactionRow(message: currentDoc["message"],createdAt: currentDoc["createdAt"],amount: currentDoc["amount"] ,from: currentDoc["from"],to: currentDoc["to"],);
                              }
                          );
                        }

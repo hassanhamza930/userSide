@@ -1,7 +1,6 @@
 import 'package:location/location.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:userside/pages/celebrity/customizeEventBookings.dart';
 import 'package:userside/pages/home/celebrityProfile/bookEvent/maps.dart';
 import 'package:userside/pages/home/celebrityProfile/components.dart';
 import 'package:userside/pages/home/celebrityProfile/howRefundsWork/howRefundsWork2.dart';
@@ -881,13 +880,14 @@ class _bookEventState extends State<bookEvent> {
                                         if(checkRequestResponse!="error"){
 
                                           Map userData=await getUserData(id: FirebaseAuth.instance.currentUser.uid);
-                                          await addNotifications(target: "celebrities", message: "${userData["fullName"]} has requested an event booking.}", from: FirebaseAuth.instance.currentUser.uid, to: widget.celebrity, type: "eventBooking");
+                                          await addNotifications(target: "celebrity", message: "${userData["fullName"]} has requested an event booking.", from: FirebaseAuth.instance.currentUser.uid, to: widget.celebrity, type: "eventBooking");
                                           var res=await addBookingRequest(
                                               context: context,
                                               celebrityId: widget.celebrity,
                                               userId: FirebaseAuth.instance.currentUser.uid,
                                               type: "eventBooking",
                                               amount: double.parse(quotation.text),
+                                              discount: 0,
                                               fullName: fullName.text,
                                               country: country,
                                               countryCode: countryCode,

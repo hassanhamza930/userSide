@@ -44,7 +44,7 @@ class _bookingRowState extends State<bookingRow> {
       color=Colors.green;
     }
 
-    else if(status=="accepted"){
+    else if(status=="complete"){
       message="Complete";
       color=Color.fromRGBO(24, 47, 91, 1);
     }
@@ -138,7 +138,7 @@ class _bookingRowState extends State<bookingRow> {
                             });
                           }
 
-                          else if(status=="accepted"){
+                          else if(status=="complete"){
                             showDialog(context: context, builder: (context){
                               return Scaffold(
                                   backgroundColor: Colors.transparent,

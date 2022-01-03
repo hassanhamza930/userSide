@@ -9,7 +9,21 @@ import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
 
-addRequest({String message,@required BuildContext context,@required String celebrityId, @required String userId, @required String type,@required double amount}) async {
+addDMRequest({
+  @required String message,
+  @required BuildContext context,
+  @required String celebrityId,
+  @required String userId,
+  @required String type,
+  @required double amount,
+  @required double discount,
+}) async {
+
+  Map celebData= await getCelebrityData(id: celebrityId);
+  int responseDays= int.parse("${celebData["dm"]["responseTime"]}");
+  DateTime createdAt=DateTime.now();
+  var expiryDate= createdAt.add(Duration(days: responseDays));
+
 
   var docId = await findOutRequestId(id1: celebrityId, id2: userId,type:type);
 
@@ -19,26 +33,29 @@ addRequest({String message,@required BuildContext context,@required String celeb
   if(existingData==null ){
 
     await FirebaseFirestore.instance.collection("requests").doc(docId).set({
-        "createdAt": DateTime.now(),
+        "createdAt": createdAt,
+        "expiryDate":expiryDate,
         "celebrity": celebrityId,
+        "discount":discount,
         "user": userId,
         "status":"pending",
         "type":type,
         "amount":amount,
-      "message":message,
-      "filtered":false,
+        "message":message,
+        "filtered":false,
     }, SetOptions(merge: true));
-
 
   }
   
   else if( existingData!=null && existingData["status"]=="complete"){
 
     await FirebaseFirestore.instance.collection("requests").doc(docId).set({
-      "createdAt": DateTime.now(),
+      "createdAt": createdAt,
+      "expiryDate":expiryDate,
       "celebrity": celebrityId,
       "user": userId,
       "status":"pending",
+      "discount":discount,
       "type":type,
       "amount":amount,
       "message":message,
@@ -60,6 +77,19 @@ addRequest({String message,@required BuildContext context,@required String celeb
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 addVideoRequest(
 {
   @required BuildContext context,
@@ -73,7 +103,8 @@ addVideoRequest(
   String videoFor,
   DateTime videoDate,
   String videoMessage,
-  bool private
+  bool private,
+  @required double discount
 })async
 {
 
@@ -86,11 +117,13 @@ addVideoRequest(
 
     await FirebaseFirestore.instance.collection("requests").doc(docId).set({
       "createdAt": DateTime.now(),
+      "expiryDate":videoDate,
       "celebrity": celebrityId,
       "user": userId,
       "status":"pending",
       "type":type,
       "amount":amount,
+      "discount":discount,
       "yourName":yourName,
       "thierName":theirName,
       "videoFor":videoFor,
@@ -110,11 +143,13 @@ addVideoRequest(
 
     await FirebaseFirestore.instance.collection("requests").doc(docId).set({
       "createdAt": DateTime.now(),
+      "expiryDate":videoDate,
       "celebrity": celebrityId,
       "user": userId,
       "status":"pending",
       "type":type,
       "amount":amount,
+      "discount":discount,
       "yourName":yourName,
       "thierName":theirName,
       "videoFor":videoFor,
@@ -178,6 +213,7 @@ addBookingRequest(
       @required String reasonForAppearance,
       @required String anyOtherEngagements,
       @required String quotation,
+      @required double discount
 
     }) async {
 
@@ -195,6 +231,7 @@ addBookingRequest(
       "status":"pending",
       "type":type,
       "amount":amount,
+      "discount":discount,
       "fullName": fullName,
       "country": country,
       "countryCode": countryCode,
@@ -238,6 +275,7 @@ addBookingRequest(
       "status":"pending",
       "type":type,
       "amount":amount,
+      "discount":discount,
       "fullName": fullName,
       "country": country,
       "countryCode": countryCode,
@@ -346,7 +384,7 @@ setRequestAsComplete({@required String userId, @required String type, @required 
     Navigator.pop(context);
 
 
-    await addTransaction(flow: "in", message: "DM request completed", to: FirebaseAuth.instance.currentUser.uid, from: FirebaseAuth.instance.currentUser.uid, amount: ((double.parse(messagePrice)) ));
+    await addTransaction(message: "DM request completed", to: FirebaseAuth.instance.currentUser.uid, from: FirebaseAuth.instance.currentUser.uid, amount: ((double.parse(messagePrice)) ));
 
     showMessage(context: context, message: "Congratulations!, you just received ${(requestDoc["amount"])*0.7} GHS.");
 

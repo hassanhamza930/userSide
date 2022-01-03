@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:userside/pages/celebrity/customizeEventBookings.dart';
 import 'package:userside/pages/home/celebrityProfile/bookEvent/maps.dart';
 import 'package:userside/pages/home/celebrityProfile/components.dart';
 import 'package:userside/pages/home/celebrityProfile/howRefundsWork/howRefundsWork2.dart';

@@ -3,6 +3,8 @@
 import 'package:dio/dio.dart';
 import "dart:io";
 
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+
 
 
 downloadVideo(Dio dio, String url, String savePath)async{
@@ -21,6 +23,9 @@ downloadVideo(Dio dio, String url, String savePath)async{
     var raf = file.openSync(mode: FileMode.write);
     raf.writeFromSync(response.data);
     await raf.close();
+
+    final result = await ImageGallerySaver.saveFile(raf.path);
+
     return "ok";
   }
   catch (e) {

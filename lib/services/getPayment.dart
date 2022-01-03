@@ -17,7 +17,16 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 
 
-getPayment({String message="Hello",@required BuildContext context, @required int amount, @required String celebrity, @required String user, @required String slug, double discount=0}) {
+getPaymentForDmRequest({
+  @required String message,
+  @required BuildContext context,
+  @required int amount,
+  @required String celebrity,
+  @required String user,
+  @required String slug,
+  @required double discount
+}) {
+
   showDialog(
       context: context,
       builder: (context) {
@@ -40,22 +49,17 @@ getPayment({String message="Hello",@required BuildContext context, @required int
                         try {
                           Map userData = await getUserData(id: user);
 
-                          // await addToWallet(amount: ((amount.toDouble()) / 100) * 0.7, id: celebrity, type: "celebrities");
-
-                          await addTransaction(discount: discount,flow: "out", message: "DM request", to: celebrity, from: user, amount: ((amount.toDouble()) / 100));
+                          await addTransaction(personId: FirebaseAuth.instance.currentUser.uid, message: "DM request", to: "letsvibe", from: user, amount: ((amount.toDouble()) / 100));
 
                           await addChatMessage(from: user, to: celebrity, message: messageText.text);
 
                           await addNotifications(type:"dm",target: "celebrity", message: "${userData["fullName"]} has requested a DM", String: String, from: user, to: celebrity);
 
-                          await addRequest(message: message,context: context, celebrityId: celebrity, userId: user, type: "dm",amount:((amount.toDouble()) / 100));
+                          await addDMRequest(message: message,context: context, celebrityId: celebrity,discount: discount, userId: user, type: "dm",amount:((amount.toDouble()) / 100));
 
                           messageText.value = TextEditingValue.empty;
                           Navigator.pop(context);
                           Navigator.pop(context);
-
-                          //  Add Transactions Here
-                          // Add Wallet here.
 
                           currentTab = 1;
                           Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) {
@@ -103,7 +107,7 @@ payout({@required String target,@required int amount, @required String number, @
         if(data["status"]==true){
 
 
-          await addTransaction(flow: "out", message: "Withdraw", to: FirebaseAuth.instance.currentUser.uid, from: FirebaseAuth.instance.currentUser.uid, amount: amount.toDouble());
+          await addTransaction(message: "Withdraw", to: FirebaseAuth.instance.currentUser.uid, from: FirebaseAuth.instance.currentUser.uid, amount: amount.toDouble());
 
           wallet=wallet-amount;
           await FirebaseFirestore.instance.collection("celebrities").doc(FirebaseAuth.instance.currentUser.uid).set(
@@ -158,7 +162,13 @@ payout({@required String target,@required int amount, @required String number, @
               SetOptions(merge: true)
           );
 
-          await addTransaction(flow: "in", message: "withdraw", to: FirebaseAuth.instance.currentUser.uid, from: FirebaseAuth.instance.currentUser.uid, amount: amount.toDouble());
+          await addTransaction(
+              message: "Withdraw",
+              to: "bank",
+              from: FirebaseAuth.instance.currentUser.uid,
+              amount: amount.toDouble(),
+              personId: FirebaseAuth.instance.currentUser.uid
+          );
 
           return data;
 
@@ -214,13 +224,13 @@ getPaymentForVideoRequest({@required BuildContext context, @required int amount,
 
                           await addToWallet(amount: ((amount.toDouble()) / 100) * 0.7, id: celebrity, type: "celebrities");
 
-                          await addTransaction(flow: "out", message: "Video Request", to: celebrity, from: user, amount: ((amount.toDouble()) / 100));
+                          await addTransaction(message: "Video Request", to: celebrity, from: user, amount: ((amount.toDouble()) / 100));
 
                           await addChatMessage(from: user, to: celebrity, message: messageText.text);
 
                           await addNotifications(type:"videoRequest",target: "celebrity", message: "${userData["fullName"]} has requested a video.", String: String, from: user, to: celebrity);
 
-                          await addRequest(context: context, celebrityId: celebrity, userId: user, type: "videoRequest",amount:((amount.toDouble()) / 100));
+                          await addVideoRequest(context: context, celebrityId: celebrity, userId: user, type: "videoRequest",amount:((amount.toDouble()) / 100));
 
                           messageText.value = TextEditingValue.empty;
                           Navigator.pop(context);

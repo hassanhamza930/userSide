@@ -8,7 +8,7 @@ import 'package:userside/util/styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
-import "package:flutter/cupertino.dart";import 'package:sliding_up_panel/sliding_up_panel.dart';
+import "package:flutter/cupertino.dart";
 
 
 
@@ -23,8 +23,9 @@ class pendingRow extends StatefulWidget {
   final String type;
   final videoDate;
   final docId;
+  final Timestamp expiryDate;
 
-  pendingRow({@required this.amount,@required String this.docId,@required this.celebrity,@required this.user,@required this.createdAt,@required this.status,@required this.type,@required this.videoDate});
+  pendingRow({@required this.expiryDate,@required this.amount,@required String this.docId,@required this.celebrity,@required this.user,@required this.createdAt,@required this.status,@required this.type,@required this.videoDate});
   @override
   _pendingRowState createState() => _pendingRowState();
 }
@@ -52,7 +53,7 @@ class _pendingRowState extends State<pendingRow> {
 
 
           if(widget.videoDate==null){
-            expiry= createdAt.add(Duration(days: int.parse( data["dm"]["responseTime"] ) ));
+            expiry= widget.expiryDate.toDate();
           }
           else{
             expiry= widget.videoDate.toDate();
@@ -159,9 +160,15 @@ class _pendingRowState extends State<pendingRow> {
                           ).then((value)async{
                             Navigator.pop(context);
                             await addNotifications(target: "user", message: "Your ${widget.type=="dm"?"DM":"Video"} request has been refunded.", from: widget.celebrity, to: FirebaseAuth.instance.currentUser.uid, type: widget.type);
-                            await addTransaction(flow: "in", message: "Refund", to: FirebaseAuth.instance.currentUser.uid, from: FirebaseAuth.instance.currentUser.uid, amount: widget.amount);
+                            await addTransaction(
+                                message: "${widget.type=="dm"?"DM":"Video"} Refund",
+                                to: FirebaseAuth.instance.currentUser.uid,
+                                from: "letsvibe",
+                                personId: FirebaseAuth.instance.currentUser.uid,
+                                amount: widget.amount
+                            );
                             await showMessage(context: context, message: "${amount} GHS have been successfully refunded in to your wallet.");
-                            FirebaseFirestore.instance.collection("requests").doc(docId).delete();
+                            await FirebaseFirestore.instance.collection("requests").doc(docId).delete();
                           });
 
 
@@ -366,7 +373,7 @@ class _pendingState extends State<pending> {
               itemBuilder: (context,index){
                 Map data=docs[index].data();
 
-                return pendingRow(amount:data["amount"],celebrity: data["celebrity"],user: data["user"],createdAt: data["createdAt"],status: data["status"],type: data["type"],videoDate:data["videoDate"],docId:docs[index].id);
+                return pendingRow(expiryDate: data["expiryDate"],amount:data["amount"],celebrity: data["celebrity"],user: data["user"],createdAt: data["createdAt"],status: data["status"],type: data["type"],videoDate:data["videoDate"],docId:docs[index].id);
               },
             );
           }
