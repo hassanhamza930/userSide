@@ -1,5 +1,6 @@
 // @dart=2.9
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:userside/pages/auth/Login.dart';
 import 'package:userside/pages/auth/welcome.dart';
 import 'package:userside/pages/auth/notificationPermission.dart';
@@ -17,6 +18,7 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // await FirebaseAuth.instance.signOut();
   runApp(MyApp());
 }
 

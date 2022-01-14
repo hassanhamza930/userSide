@@ -94,14 +94,16 @@ class _nextState extends State<next> {
             pageControl.animateToPage(pageControl.page.ceil()+1, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
           },
           style:ButtonStyle(
+              padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(12)),
               backgroundColor:MaterialStateProperty.all(Colors.orange),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
+                      borderRadius: BorderRadius.circular(10.0),
                   )
               )
           ),
-          child: Icon(Icons.keyboard_arrow_right,size:50,color: Colors.white),
+          // child: Icon(Icons.keyboard_arrow_right,size:50,color: Colors.white),
+          child: Text("Next",style: small(color: Colors.white,size: 20,))
       ),
       ),
     );
@@ -126,18 +128,20 @@ class _backState extends State<back> {
       child: Align(
         alignment:Alignment.bottomLeft,
         child: TextButton(
-          onPressed: (){
-            pageControl.animateToPage(pageControl.page.ceil()-1, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
-          },
-          style:ButtonStyle(
-              backgroundColor:MaterialStateProperty.all(Colors.orange),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                  )
-              )
-          ),
-          child: Icon(Icons.keyboard_arrow_left,size:50,color: Colors.white),
+            onPressed: (){
+              pageControl.animateToPage(pageControl.page.ceil()-1, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+            },
+            style:ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(12)),
+                backgroundColor:MaterialStateProperty.all(Colors.orange),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    )
+                )
+            ),
+            // child: Icon(Icons.keyboard_arrow_right,size:50,color: Colors.white),
+            child: Text("Back",style: small(color: Colors.white,size: 20,))
         ),
       ),
     );

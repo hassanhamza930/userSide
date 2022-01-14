@@ -40,7 +40,7 @@ class userDetails {
         notificationPermission=json["notificationPermission"],
         accountType=json["accountType"],
         imgSrc=json["imgSrc"],
-        wallet=json["wallet"]
+        wallet=double.parse("${json["wallet"]}")
   ;
 
   Map<String, dynamic> toJson() => {

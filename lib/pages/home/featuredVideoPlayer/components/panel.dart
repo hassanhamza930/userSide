@@ -2,7 +2,11 @@ import 'package:userside/pages/home/featured/components/featuredVibeContainer.da
 import 'package:userside/pages/home/featuredVideoPlayer/fanClub.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
-import "package:flutter/cupertino.dart";import 'package:flutter/cupertino.dart';
+import "package:flutter/cupertino.dart";
+import 'package:flutter/cupertino.dart';
+
+
+var filter="popular";
 
 class panel extends StatefulWidget {
   @override
@@ -31,37 +35,30 @@ class _panelState extends State<panel> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "Popular",
-                        style: TextStyle(
-                            color: Colors.white,
-                          fontSize: 17,
-                          fontFamily: "Avenir"
-                        ),
-                      ),
-                      SizedBox(width: 20,),
-                      Text(
-                        "New",
-                        style: TextStyle(
-                            color: Colors.white,
+                      GestureDetector(
+                        onTap: ()async{
+                          setState(() {
+                            filter="popular";
+                          });
+                        },
+                        child: Text(
+                          "Popular",
+                          style: TextStyle(
+                              color: Colors.white,
                             fontSize: 17,
                             fontFamily: "Avenir"
+                          ),
                         ),
                       ),
                       SizedBox(width: 20,),
                       GestureDetector(
-                        onTap: (){
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context){
-                                  return fanClub();
-                                }
-                              )
-                          );
+                        onTap: ()async{
+                          setState(() {
+                            filter="new";
+                          });
                         },
                         child: Text(
-                          "Fan Club",
+                          "New",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 17,
@@ -69,6 +66,7 @@ class _panelState extends State<panel> {
                           ),
                         ),
                       ),
+                      SizedBox(width: 20,),
                     ],
                   ),
                 ),
@@ -86,7 +84,7 @@ class _panelState extends State<panel> {
                           height: 190,
                           width: MediaQuery.of(context).size.width,
                           child: StreamBuilder(
-                              stream: FirebaseFirestore.instance.collection("requests").where("type",isEqualTo: "videoRequest").where("status",isEqualTo:"complete").where("private",isEqualTo: false).snapshots(),
+                              stream: FirebaseFirestore.instance.collection("requests").where("type",isEqualTo: "videoRequest").where("status",isEqualTo:"complete").where("private",isEqualTo: false).orderBy(filter=="popular"?"likes":"createdAt").snapshots(),
                               builder: (context, snapshot) {
 
                                 if(snapshot.hasData){

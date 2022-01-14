@@ -641,260 +641,99 @@ class _bookingDetailsState extends State<bookingDetails> {
                           Container(
                             width: width * 0.8,
                             child: GestureDetector(
-                              onTap: ()async{
+                              onTap:()async{
+                                showLoading(context: context);
+
+
+                                var response=await http.get(Uri.parse("https://us-central1-funnel-887b0.cloudfunctions.net/getPaymentPage"),headers: {"name":data["fullName"],"amount": "${double.parse("${quotation.text}")*100}"});
+                                var responseData=jsonDecode(response.body);
+
+                                var slug=responseData["data"]["slug"];
 
                                 Navigator.pop(context);
-
-                                var promo=TextEditingController(text: "");
 
                                 showDialog(
                                     context: context,
                                     builder: (context) {
+                                      var width = MediaQuery.of(context).size.width;
+                                      var height = MediaQuery.of(context).size.height;
 
                                       return Scaffold(
                                         backgroundColor: Colors.transparent,
                                         body: Center(
                                           child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.black.withOpacity(0.7),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)
-                                                )
-                                            ),
-                                            height: height * 0.5,
-                                            width: width * 0.7,
-                                            child: Center(
-                                              child: ListView(
-                                                shrinkWrap: true,
-                                                children: [
-                                                  Center(
-                                                    child: Container(
-                                                      padding: EdgeInsets.all(3),
-                                                      width: width * 0.6,
-                                                      decoration: BoxDecoration(
-                                                          color: Colors.white.withOpacity(0.3),
-                                                          borderRadius: BorderRadius.all(Radius.circular(18.0))),
-                                                      child: Center(
-                                                        child: TextField(
-                                                          controller: promo,
-                                                          style: small(color: Colors.white),
-                                                          decoration: InputDecoration(
-                                                            labelText: "Promo Code",
-                                                            labelStyle: small(color: Colors.white),
-                                                            focusedBorder: InputBorder.none,
-                                                            enabledBorder: InputBorder.none,
-                                                            contentPadding: EdgeInsetsDirectional.only(start: 20),
-                                                          ),
-                                                          onChanged: (e) => {},
-                                                          keyboardType: TextInputType.text,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 20,),
-                                                  Center(
-                                                    child: authButton(text: "Continue", color: Colors.white, bg: Colors.orange, onPress: ()async{
-
+                                            width: width * 0.8,
+                                            height: height * 0.8,
+                                            child: InAppWebView(
+                                              onWebViewCreated: (_webViewController) {
+                                                _webViewController.addJavaScriptHandler(
+                                                    handlerName: 'close',
+                                                    callback: (args) async {
                                                       showLoading(context: context);
 
-                                                      var promoResponse= await checkPromoCode(code: promo.text, type: "eventBooking", celebrity: widget.celebrity );
+                                                      try {
+                                                        Map userData = await getUserData(id: FirebaseAuth.instance.currentUser.uid);
 
-                                                      if(promoResponse["message"]=="ok"){
+                                                        await addToWallet(
+                                                            amount: double.parse( quotation.text) * 0.7,
+                                                            id: widget.celebrity,
+                                                            type: "celebrities"
+                                                        );
 
-                                                        var discount= int.parse(promoResponse["promo"]["promoDiscount"]);
-                                                        var discountPercentage=(1- (discount/100));
-                                                        var amount=double.parse(quotation.text);
-                                                        amount=amount*discountPercentage;
-                                                        var discountedAmount=double.parse(data["eventBooking"]["price"])*(double.parse(promoResponse["promo"]["promoDiscount"])/100);
+                                                        await addTransaction(
+                                                            message: "Event Booking",
+                                                            to: "letsvibe",
+                                                            from: FirebaseAuth.instance.currentUser.uid,
+                                                            amount: double.parse(quotation.text),
+                                                            personId: FirebaseAuth.instance.currentUser.uid
+                                                        );
 
+                                                        await addTransaction(
+                                                          message: "Event Booking",
+                                                          to: widget.celebrity,
+                                                          from: "letsvibe",
+                                                          amount: (double.parse(quotation.text)*0.7).floorToDouble(),
+                                                          personId: widget.celebrity,
+                                                        );
 
-                                                        print('ifed');
+                                                        await addNotifications(
+                                                            type:"eventBooking",
+                                                            target: "celebrity",
+                                                            message: "${userData["fullName"]} has accepted your offer, You have received ${double.parse(quotation.text)*0.7} GHS for an event booking",
+                                                            from: FirebaseAuth.instance.currentUser.uid ,
+                                                            to: widget.celebrity
+                                                        );
 
-                                                        var response=await http.get(Uri.parse("https://us-central1-funnel-887b0.cloudfunctions.net/getPaymentPage"),headers: {"name":data["fullName"],"amount": "${amount*100}"});
-                                                        var responseData=jsonDecode(response.body);
-
-                                                        var slug=responseData["data"]["slug"];
+                                                        await FirebaseFirestore.instance.collection('requests').doc(widget.docId).set(
+                                                            {
+                                                              "status":"complete"
+                                                            },
+                                                            SetOptions(merge: true)
+                                                        );
 
                                                         Navigator.pop(context);
-
-                                                        showDialog(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              var width = MediaQuery.of(context).size.width;
-                                                              var height = MediaQuery.of(context).size.height;
-
-                                                              return Scaffold(
-                                                                backgroundColor: Colors.transparent,
-                                                                body: Center(
-                                                                  child: Container(
-                                                                    width: width * 0.8,
-                                                                    height: height * 0.8,
-                                                                    child: InAppWebView(
-                                                                      onWebViewCreated: (_webViewController) {
-                                                                        _webViewController.addJavaScriptHandler(
-                                                                            handlerName: 'close',
-                                                                            callback: (args) async {
-                                                                              showLoading(context: context);
-
-                                                                              try {
-                                                                                Map userData = await getUserData(id: FirebaseAuth.instance.currentUser.uid);
-
-                                                                                await addToWallet(amount: amount * 0.7, id: widget.celebrity, type: "celebrities");
-
-                                                                                await addTransaction(message: "Event Booking", to: widget.celebrity, from: FirebaseAuth.instance.currentUser.uid, amount: ( amount));
-
-                                                                                await addNotifications(type:"eventBooking",target: "celebrity", message: "${userData["fullName"]} has accepted your offer, You have recieved ${amount*0.7} GHS for an event booking", from: FirebaseAuth.instance.currentUser.uid , to: widget.celebrity);
-
-                                                                                await FirebaseFirestore.instance.collection('requests').doc(widget.docId).set(
-                                                                                    {
-                                                                                      "status":"accepted"
-                                                                                    },
-                                                                                    SetOptions(merge: true)
-                                                                                );
-
-                                                                                Navigator.pop(context);
-                                                                                Navigator.pop(context);
-                                                                                Navigator.pop(context);
-
-                                                                                //  Add Transactions Here
-                                                                                // Add Wallet here.
-
-
-                                                                              } catch (e) {
-                                                                                Navigator.pop(context);
-                                                                                showErrorDialogue(context: context, message: e.toString());
-                                                                              }
-                                                                            });
-                                                                      },
-                                                                      initialUrlRequest: URLRequest(url: Uri.parse("https://paystack.com/pay/$slug")),
-                                                                      initialOptions: InAppWebViewGroupOptions(
-                                                                          android: AndroidInAppWebViewOptions(
-                                                                              allowFileAccess: true, cacheMode: AndroidCacheMode.LOAD_CACHE_ELSE_NETWORK, allowContentAccess: true)),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            });
-
-
-                                                        print("showed");
-                                                      }
-
-                                                      else{
                                                         Navigator.pop(context);
-                                                        showErrorDialogue(context: context, message: "Your promo code is invalid or expired");
+                                                        Navigator.pop(context);
+
+                                                        //  Add Transactions Here
+                                                        // Add Wallet here.
+
+
+                                                      } catch (e) {
+                                                        Navigator.pop(context);
+                                                        showErrorDialogue(context: context, message: e.toString());
                                                       }
-
-                                                    }, context: context,thin: true),
-                                                  ),
-                                                  SizedBox(height: 50,),
-                                                  GestureDetector(
-                                                    onTap: ()async{
-                                                      showLoading(context: context);
-
-
-                                                      var response=await http.get(Uri.parse("https://us-central1-funnel-887b0.cloudfunctions.net/getPaymentPage"),headers: {"name":data["fullName"],"amount": "${double.parse("${quotation.text}")*100}"});
-                                                      var responseData=jsonDecode(response.body);
-
-                                                      var slug=responseData["data"]["slug"];
-
-                                                      Navigator.pop(context);
-
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            var width = MediaQuery.of(context).size.width;
-                                                            var height = MediaQuery.of(context).size.height;
-
-                                                            return Scaffold(
-                                                              backgroundColor: Colors.transparent,
-                                                              body: Center(
-                                                                child: Container(
-                                                                  width: width * 0.8,
-                                                                  height: height * 0.8,
-                                                                  child: InAppWebView(
-                                                                    onWebViewCreated: (_webViewController) {
-                                                                      _webViewController.addJavaScriptHandler(
-                                                                          handlerName: 'close',
-                                                                          callback: (args) async {
-                                                                            showLoading(context: context);
-
-                                                                            try {
-                                                                              Map userData = await getUserData(id: FirebaseAuth.instance.currentUser.uid);
-
-                                                                              await addToWallet(
-                                                                                  amount: double.parse( quotation.text) * 0.7,
-                                                                                  id: widget.celebrity,
-                                                                                  type: "celebrities"
-                                                                              );
-
-                                                                              await addTransaction(
-                                                                                  message: "Event Booking",
-                                                                                  to: "letsvibe",
-                                                                                  from: FirebaseAuth.instance.currentUser.uid,
-                                                                                  amount: double.parse(quotation.text),
-                                                                                  personId: FirebaseAuth.instance.currentUser.uid
-                                                                              );
-
-                                                                              await addTransaction(
-                                                                                  message: "Event Booking",
-                                                                                  to: widget.celebrity,
-                                                                                  from: "letsvibe",
-                                                                                  amount: (double.parse(quotation.text)*0.7).floorToDouble(),
-                                                                                  personId: widget.celebrity,
-                                                                              );
-
-                                                                              await addNotifications(
-                                                                                  type:"eventBooking",
-                                                                                  target: "celebrity",
-                                                                                  message: "${userData["fullName"]} has accepted your offer, You have recieved ${double.parse(quotation.text)*0.7} GHS for an event booking",
-                                                                                  from: FirebaseAuth.instance.currentUser.uid ,
-                                                                                  to: widget.celebrity
-                                                                              );
-
-                                                                              await FirebaseFirestore.instance.collection('requests').doc(widget.docId).set(
-                                                                                  {
-                                                                                    "status":"complete"
-                                                                                  },
-                                                                                  SetOptions(merge: true)
-                                                                              );
-
-                                                                              Navigator.pop(context);
-                                                                              Navigator.pop(context);
-                                                                              Navigator.pop(context);
-
-                                                                              //  Add Transactions Here
-                                                                              // Add Wallet here.
-
-
-                                                                            } catch (e) {
-                                                                              Navigator.pop(context);
-                                                                              showErrorDialogue(context: context, message: e.toString());
-                                                                            }
-                                                                          });
-                                                                    },
-                                                                    initialUrlRequest: URLRequest(url: Uri.parse("https://paystack.com/pay/$slug")),
-                                                                    initialOptions: InAppWebViewGroupOptions(
-                                                                        android: AndroidInAppWebViewOptions(
-                                                                            allowFileAccess: true, cacheMode: AndroidCacheMode.LOAD_CACHE_ELSE_NETWORK, allowContentAccess: true)),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          });
-                                                    },
-                                                    child: Center(
-                                                        child: Text("Have no promo code?",style: small(color: Colors.white,size: 14),)
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                                    });
+                                              },
+                                              initialUrlRequest: URLRequest(url: Uri.parse("https://paystack.com/pay/$slug")),
+                                              initialOptions: InAppWebViewGroupOptions(
+                                                  android: AndroidInAppWebViewOptions(
+                                                      allowFileAccess: true, cacheMode: AndroidCacheMode.LOAD_CACHE_ELSE_NETWORK, allowContentAccess: true)),
                                             ),
                                           ),
                                         ),
                                       );
                                     });
-
                               },
                               child: Container(
                                 padding: EdgeInsets.all(10),
