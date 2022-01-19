@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:userside/util/styles.dart';
 
 class Splash extends StatefulWidget {
   const  Splash();
@@ -79,7 +80,7 @@ class _SplashState extends State<Splash> {
 
     }
     else{
-      print("nah nigga");
+      print("nah");
     }
   }
 
@@ -92,9 +93,22 @@ class _SplashState extends State<Splash> {
       if(status=="Logged"){
         try{
           initDynamicLinks();
-          Navigator.push(context, CupertinoPageRoute(builder: (context){
-            return Home();
-          }));
+
+          var userDoc= await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser.uid.toString()).get();
+
+          if(userDoc.exists){
+            Navigator.push(context, CupertinoPageRoute(builder: (context){
+              return Home();
+            }));
+          }
+          else{
+            await FirebaseAuth.instance.signOut();
+            Navigator.push(context, CupertinoPageRoute(builder: (context){
+              return Scaffold(backgroundColor: Colors.black,body: Center(child: Text("You have been logged out, Your account may have been terminated. Please Contact Administrator",style: small(color: Colors.white),),),);
+            }));
+          }
+
+
         }
         catch(e){
           showErrorDialogue(context: context, message: "${e.toString()}" );
