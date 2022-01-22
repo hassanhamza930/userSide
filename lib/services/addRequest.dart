@@ -47,7 +47,7 @@ addDMRequest({
 
   }
   
-  else if( existingData!=null && existingData["status"]=="complete"){
+  else if( existingData!=null && existingData["status"]== "complete" || existingData["status"]=="refunded"){
 
     await FirebaseFirestore.instance.collection("requests").doc(docId).set({
       "createdAt": createdAt,
@@ -339,7 +339,7 @@ checkRequest({@required BuildContext context,@required String celebrityId, @requ
    return "error";
 
   }
-  else if(existingData!=null && existingData["status"]=="complete"){
+  else if(existingData!=null && existingData["status"]=="complete" || existingData["status"]=="refunded"){
     return "ok";
   }
   else{

@@ -14,7 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:userside/util/styles.dart';
 
 class Splash extends StatefulWidget {
-  const  Splash();
+  const Splash();
 
   @override
   _SplashState createState() => _SplashState();
@@ -26,105 +26,90 @@ class _SplashState extends State<Splash> {
   void initDynamicLinks() async {
     print("called link");
 
-
     final PendingDynamicLinkData data =
-    await FirebaseDynamicLinks.instance.getInitialLink();
+        await FirebaseDynamicLinks.instance.getInitialLink();
     final Uri deepLink = data.link;
-
 
     if (deepLink != null) {
       handleDynamicLink(deepLink);
     }
 
-
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData dynamicLink) async {
-          print("called link");
+      print("called link");
 
-          final Uri deepLink = dynamicLink.link;
+      final Uri deepLink = dynamicLink.link;
 
-          if (deepLink != null) {
-            handleDynamicLink(deepLink);
-          }
-        },
-        onError: (OnLinkErrorException e) async {
-          print(e.message);
-        }
-    );
+      if (deepLink != null) {
+        handleDynamicLink(deepLink);
+      }
+    }, onError: (OnLinkErrorException e) async {
+      print(e.message);
+    });
   }
 
-
-  handleDynamicLink(Uri url) async{
+  handleDynamicLink(Uri url) async {
     print("handling dynamic link");
     List<String> separatedString = [];
     separatedString.addAll(url.path.split('/'));
     if (separatedString[1] == "post") {
-
       print("checking");
-      var status= await checkIfLogged(context);
+      var status = await checkIfLogged(context);
 
-        print("shifting");
-        await Future.delayed(Duration(seconds: 2),()async{
-          Navigator.push(
-              context,
-              CupertinoPageRoute(
-                  builder: (context){
-                    return celebrityProfilePage(id: separatedString[2]);
-                  }
-              )
-          );
-        });
-
-
-
-
-    }
-    else{
+      print("shifting");
+      await Future.delayed(Duration(seconds: 2), () async {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return celebrityProfilePage(id: separatedString[2]);
+        }));
+      });
+    } else {
       print("nah");
     }
   }
 
+  oneTime() async {
+    await FirebaseMessagingInit(context);
 
-  oneTime()async{
-   await FirebaseMessagingInit(context);
-
-    await Future.delayed(Duration(seconds: 2), ()async{
-      var status= await checkIfLogged(context);
-      if(status=="Logged"){
-        try{
+    await Future.delayed(Duration(seconds: 2), () async {
+      var status = await checkIfLogged(context);
+      if (status == "Logged") {
+        try {
           initDynamicLinks();
 
-          var userDoc= await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser.uid.toString()).get();
+          var userDoc = await FirebaseFirestore.instance
+              .collection("users")
+              .doc(FirebaseAuth.instance.currentUser.uid.toString())
+              .get();
 
-          if(userDoc.exists){
-            Navigator.push(context, CupertinoPageRoute(builder: (context){
+          if (userDoc.exists) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
               return Home();
             }));
           }
-          else{
+          else {
             await FirebaseAuth.instance.signOut();
-            Navigator.push(context, CupertinoPageRoute(builder: (context){
-              return Scaffold(backgroundColor: Colors.black,body: Center(child: Text("You have been logged out, Your account may have been terminated. Please Contact Administrator",style: small(color: Colors.white),),),);
-            }));
+            showMessage(context: context, message: "You have been logged out, Your account may have been terminated. Please Contact Administrator");
+
+            Future.delayed(Duration(seconds: 5),(){
+              Navigator.pop(context);
+              Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                  return welcome();
+              }));
+
+            });
+
           }
-
-
+        } catch (e) {
+          showErrorDialogue(context: context, message: "${e.toString()}");
         }
-        catch(e){
-          showErrorDialogue(context: context, message: "${e.toString()}" );
-        };
-
-      }
-      else{
-        Navigator.push(context, CupertinoPageRoute(builder: (context){
+        ;
+      } else {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return welcome();
         }));
-
       }
-
     });
   }
-
 
   @override
   void initState() {
@@ -134,7 +119,6 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -156,7 +140,7 @@ class _SplashState extends State<Splash> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height/5,
+                    height: MediaQuery.of(context).size.height / 5,
                     child: Image.asset(
                       "assets/logo.png",
                       fit: BoxFit.contain,
@@ -177,8 +161,5 @@ class _SplashState extends State<Splash> {
         ),
       ),
     );
-
-
-
   }
 }

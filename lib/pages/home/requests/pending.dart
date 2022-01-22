@@ -150,8 +150,6 @@ class _pendingRowState extends State<pendingRow> {
                           var amount=data["amount"];
                           Map userData= await getUserData(id: FirebaseAuth.instance.currentUser.uid);
 
-
-
                           await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser.uid).set(
                               {
                                 "wallet": (userData["wallet"]+amount)
@@ -168,19 +166,17 @@ class _pendingRowState extends State<pendingRow> {
                                 amount: widget.amount
                             );
                             await showMessage(context: context, message: "${amount} GHS have been successfully refunded in to your wallet.");
-                            await FirebaseFirestore.instance.collection("requests").doc(docId).delete();
+                            await FirebaseFirestore.instance.collection("requests").doc(docId).set(
+                                {
+                                  "status":"refunded"
+                                },
+                              SetOptions(merge: true)
+                            );
                           });
 
-
-
-
-
-
-
-
                         }
-                        else{
 
+                        else{
                           showDialog(context: context, builder: (context2){
                             return Container(
                               height: height*0.7,
