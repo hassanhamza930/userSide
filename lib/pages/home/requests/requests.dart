@@ -214,6 +214,7 @@ class _requestsState extends State<requests> {
                                                     stream: FirebaseFirestore.instance.collection("requests")
                                                         .where("user",isEqualTo: FirebaseAuth.instance.currentUser.uid)
                                                         .where("type",isEqualTo: "eventBooking" )
+                                                        .where("status",isNotEqualTo: "refunded")
                                                         .snapshots(),
                                                     builder: (context, snapshot) {
                                                       if(snapshot.hasData){

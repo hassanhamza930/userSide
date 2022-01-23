@@ -699,7 +699,7 @@ class _bookingDetailsState extends State<bookingDetails> {
                                                         await addNotifications(
                                                             type:"eventBooking",
                                                             target: "celebrity",
-                                                            message: "${userData["fullName"]} has accepted your offer, You have received ${double.parse(quotation.text)*0.7} GHS for an event booking",
+                                                            message: "${userData["fullName"]} has accepted your offer, You have received ${(double.parse(quotation.text)*0.7).floorToDouble()} GHS for an event booking",
                                                             from: FirebaseAuth.instance.currentUser.uid ,
                                                             to: widget.celebrity
                                                         );
@@ -762,6 +762,12 @@ class _bookingDetailsState extends State<bookingDetails> {
                             child: GestureDetector(
                               onTap: ()async{
 
+                                await FirebaseFirestore.instance.collection("requests").doc(widget.docId).set(
+                                    {
+                                      "status":"rejected"
+                                    },
+                                    SetOptions(merge:true)
+                                );
 
                                 Navigator.pop(context);
 
@@ -773,7 +779,8 @@ class _bookingDetailsState extends State<bookingDetails> {
                                     type: "eventBooking"
                                 );
 
-                                await FirebaseFirestore.instance.collection("requests").doc(widget.docId).delete();
+
+
 
 
 

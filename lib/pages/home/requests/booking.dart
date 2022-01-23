@@ -168,6 +168,21 @@ class _bookingRowState extends State<bookingRow> {
                             });
                           }
 
+                          else if(status=="rejected"){
+                            showDialog(context: context, builder: (context){
+                              return Scaffold(
+                                  backgroundColor: Colors.transparent,
+                                  body: Center(
+                                    child: Container(
+                                      width: width*0.9,
+                                      height: height*0.8,
+                                      child: pendingDetails(docId: widget.docId,celebrity:widget.celebrity),
+                                    ),
+                                  )
+                              );
+                            });
+                          }
+
 
 
                         },
@@ -240,7 +255,7 @@ class _bookingState extends State<booking> {
 
 
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("requests").where("type",isEqualTo: "eventBooking").where("user",isEqualTo: FirebaseAuth.instance.currentUser.uid.toString()).snapshots(),
+      stream: FirebaseFirestore.instance.collection("requests").where("type",isEqualTo: "eventBooking").where("user",isEqualTo: FirebaseAuth.instance.currentUser.uid.toString()).where("status",isNotEqualTo: "refunded").snapshots(),
       builder: (context, snapshot) {
 
 

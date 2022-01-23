@@ -156,7 +156,6 @@ class _pendingRowState extends State<pendingRow> {
                               },
                               SetOptions(merge: true)
                           ).then((value)async{
-                            Navigator.pop(context);
                             await addNotifications(target: "user", message: "Your ${widget.type=="dm"?"DM":"Video"} request has been refunded.", from: widget.celebrity, to: FirebaseAuth.instance.currentUser.uid, type: widget.type);
                             await addTransaction(
                                 message: "${widget.type=="dm"?"DM":"Video"} Refund",
@@ -165,13 +164,15 @@ class _pendingRowState extends State<pendingRow> {
                                 personId: FirebaseAuth.instance.currentUser.uid,
                                 amount: widget.amount
                             );
-                            await showMessage(context: context, message: "${amount} GHS have been successfully refunded in to your wallet.");
                             await FirebaseFirestore.instance.collection("requests").doc(docId).set(
                                 {
                                   "status":"refunded"
                                 },
-                              SetOptions(merge: true)
+                                SetOptions(merge: true)
                             );
+                            Navigator.pop(context);
+                            await showMessage(context: context, message: "${amount} GHS have been successfully refunded in to your wallet.");
+
                           });
 
                         }

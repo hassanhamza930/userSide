@@ -317,7 +317,7 @@ class _requestVideoState extends State<requestVideo> {
                         GestureDetector(
                             onTap: () async{
 
-                              if(myName.text!="" && celebrityRequest.text!=""){
+                              if(myName.text!="" && celebrityRequest.text!="" &&  dob!="By when do you need this video" ){
                                 showLoading(context: context);
 
                                 var checkRequestResponse = await checkRequest(context: context, celebrityId: widget.celebId, userId: FirebaseAuth.instance.currentUser.uid.toString(), type: "videoRequest");
@@ -591,7 +591,7 @@ class _requestVideoState extends State<requestVideo> {
                                   Navigator.pop(context);
                                   showErrorDialogue(
                                       context: context,
-                                      message: "You already have a pending DM request for this celebrity.");
+                                      message: "You already have a pending Video request for this celebrity.");
                                 }
 
                               }

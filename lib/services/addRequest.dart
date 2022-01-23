@@ -139,7 +139,7 @@ addVideoRequest(
 
   }
 
-  else if( existingData!=null && existingData["status"]=="complete"){
+  else if( existingData!=null && existingData["status"]=="complete" || existingData["status"]=="refunded"){
 
     await FirebaseFirestore.instance.collection("requests").doc(docId).set({
       "createdAt": DateTime.now(),
@@ -266,7 +266,7 @@ addBookingRequest(
 
   }
 
-  else if( existingData!=null && existingData["status"]=="complete"){
+  else if( existingData!=null && existingData["status"]=="complete" || existingData["status"]=="refunded"){
 
     await FirebaseFirestore.instance.collection("requests").doc(docId).set({
       "createdAt": DateTime.now(),
