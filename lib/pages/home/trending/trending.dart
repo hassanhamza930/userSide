@@ -23,54 +23,54 @@ class _TrendingState extends State<Trending> {
               height: MediaQuery.of(context).size.height,
               width: width,
               child: Center(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    SizedBox(height: 50,),
-                    Center(
-                      child: Container(
-                        width: width*0.9,
-                        margin: EdgeInsets.only(top:20),
-                        child: Text(
-                          "Trending",
-                          textAlign: TextAlign.center,
-                          style: medium(color: Colors.white),
-                        ),
-
-                      ) ,
-                    ),
-                    SizedBox(height: 20,),
-                    Container(
-                      width: width*0.9,
-                      child: Column(
-                        children: [
-                         Row(
-                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                           children: [
-                             celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
-                             celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
-                           ],
-                         ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
-                              celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
-                              celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
-                            ],
-                          ),
-
-                        ],
-                      )
-                    )
-                  ],
-                ),
+                // child: ListView(
+                //   shrinkWrap: true,
+                //   children: [
+                //     SizedBox(height: 50,),
+                //     Center(
+                //       child: Container(
+                //         width: width*0.9,
+                //         margin: EdgeInsets.only(top:20),
+                //         child: Text(
+                //           "Trending",
+                //           textAlign: TextAlign.center,
+                //           style: medium(color: Colors.white),
+                //         ),
+                //
+                //       ) ,
+                //     ),
+                //     SizedBox(height: 20,),
+                //     Container(
+                //       width: width*0.9,
+                //       child: Column(
+                //         children: [
+                //          Row(
+                //            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //            children: [
+                //              celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
+                //              celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
+                //            ],
+                //          ),
+                //           Row(
+                //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //             children: [
+                //               celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
+                //               celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
+                //             ],
+                //           ),
+                //           Row(
+                //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //             children: [
+                //               celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
+                //               celebrityContainer("assets/featured/celebrityStoneBoy.png","StoneBoy"),
+                //             ],
+                //           ),
+                //
+                //         ],
+                //       )
+                //     )
+                //   ],
+                // ),
               ),
             ),
             GestureDetector(

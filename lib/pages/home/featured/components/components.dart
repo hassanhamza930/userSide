@@ -205,16 +205,35 @@ categoryRow({@required BuildContext context,@required List categoryData,@require
           ],
         ),
         Container(
-          height: 230,
+          height: 280,
           child: ListView.builder(
+            shrinkWrap: true,
             itemCount: categoryData.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context,index){
-              return Row(
-                children: [
-                  celebrityContainer(categoryData[index]["imgSrc"],categoryData[index]["name"]),
-                  SizedBox(width: 10,),
-                ],
+              return Container(
+                margin: EdgeInsets.only(right:10),
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection("celebrities").doc("${categoryData[index]}").snapshots(),
+                  builder: (context, snapshot) {
+
+                    if(snapshot.hasData){
+                      DocumentSnapshot doc=snapshot.data;
+                      Map data=doc.data();
+                      print(data);
+                      if(data!=null){
+                        return celebrityContainer( celebId:categoryData[index],celebData:data);
+                      }
+                      else{
+                        return Container();
+                      }
+                    }
+                    else{
+                      return Container();
+                    }
+
+                  }
+                ),
               );
             },
           ),

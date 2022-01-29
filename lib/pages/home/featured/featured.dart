@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'components/components.dart';
 import 'package:userside/pages/home/featured/components/celebrityContainer.dart';
 import 'package:userside/pages/home/featured/components/featuredVibeContainer.dart';
@@ -142,14 +144,27 @@ class _FeaturedState extends State<Featured> {
                     ),
                     featuredVibes(),
                     banner(),
-                    categoryRow(context: context,categoryData: categoryData,categoryName: "Trending"),
-                    SizedBox(height: 10,),
-                    categoryRow(context: context,categoryData: categoryData,categoryName: "Pick of the week"),
-                    bigBanner(context: context),
-                    SizedBox(height: 10,),
-                    categoryRow(context: context,categoryData: categoryData,categoryName: "Musicians"),
-                    SizedBox(height: 10,),
-                    categoryRow(context: context,categoryData: categoryData,categoryName: "Actors"),
+                    SizedBox(height: 20,),
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("appSettings").doc("categories").snapshots(),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData){
+                          var data=snapshot.data["categories"];
+                          return ListView.builder(
+                            shrinkWrap: true,
+                              itemCount: data.length,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context,index){
+                                return categoryRow(context: context,categoryData: data[index]["celebrities"],categoryName: data[index]["name"]);
+                                  Text("${data[index]["name"]}");
+                              }
+                          );
+                        }
+                        else{
+                          return Container();
+                        }
+                      }
+                    ),
                     SizedBox(height: 50,),
 
                   ],

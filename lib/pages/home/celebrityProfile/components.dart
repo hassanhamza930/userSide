@@ -20,7 +20,7 @@ celebButton({@required String label,@required BuildContext context,@required Col
               },
               child: Center(
                 child: Container(
-                  padding: EdgeInsets.only(top:10,bottom: 10,left:5,right:5),
+                  padding: EdgeInsets.only(top:10,bottom: 10,left:10,right:10),
                   decoration: BoxDecoration(
                       color: bg,
                       borderRadius: BorderRadius.all(Radius.circular(20))

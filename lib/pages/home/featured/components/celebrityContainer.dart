@@ -4,10 +4,10 @@ import "package:flutter/cupertino.dart";import 'package:flutter/cupertino.dart';
 
 
 class celebrityContainer extends StatefulWidget {
-  celebrityContainer(this.image,this.name);
+  celebrityContainer({this.celebData,this.celebId});
 
-  final String image;
-  final String name;
+  final Map celebData;
+  final String celebId;
 
   @override
   _celebrityContainerState createState() => _celebrityContainerState();
@@ -21,87 +21,66 @@ class _celebrityContainerState extends State<celebrityContainer> {
         Navigator.push(
           context,
           CupertinoPageRoute(builder: (context){
-            return celebrityProfilePage();
+            return celebrityProfilePage(id: widget.celebId,);
           })
         );
       },
-      child: Stack(
-        children: [
-          Container(
-            margin: EdgeInsets.only(top:20),
-            decoration: BoxDecoration(
-                color: Color.fromRGBO(24, 48, 93, 1),
-                borderRadius: BorderRadius.all(Radius.circular(15))
-            ),
-            height: 200,
-            width: 143,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset(this.widget.image),
-                Flexible(
-                  child: Container(
-                    padding: EdgeInsets.only(top:10,left: 10,right: 10,bottom: 5),
-                    child: Text(
-                        this.widget.name,
-                        // overflow: TextOverflow.fade,
-                        style: TextStyle(
-                        fontFamily: "Avenir",
-                        fontSize: 18,
-                        color: Colors.orange,
-                      ),
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: Container(
-                    padding: EdgeInsets.only(left:10),
-                    child: Text(
-                      "More Info",
-                      style: TextStyle(
-                        fontFamily: "Avenir",
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Center(
-            child: Container(
-              height: 230,
-              width: 143,
-              alignment: Alignment.bottomCenter,
+      child: Container(
+        margin: EdgeInsets.only(top:20),
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(24, 48, 93, 1),
+            borderRadius: BorderRadius.all(Radius.circular(15))
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
               child: Container(
-                //padding: EdgeInsets.only(top: 10, bottom: 10),
-                decoration: BoxDecoration(
-                    gradient: new LinearGradient(
-                      colors: [
-                        Colors.orange,
-                        Colors.orange,
-                      ],
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                width: 80,
-                height: 27,
-                //height: 50,
-                child: Center(
-                  child: Text(
-                    "REQUEST",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: "AvenirBold",
-                      fontSize: 11,
-                      color: Colors.white,
-                    ),
-                  ),
+                width: 180,
+                height: 200,
+                child: Image.network(
+                  widget.celebData["imgSrc"],
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-          ),
-        ],
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Text(
+                        widget.celebData["fullName"],
+                        // overflow: TextOverflow.fade,
+                        style: TextStyle(
+                          fontFamily: "Avenir",
+                          fontSize: 18,
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        "More Info",
+                        style: TextStyle(
+                          fontFamily: "Avenir",
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          ],
+        ),
       ),
     );
   }
