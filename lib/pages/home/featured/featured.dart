@@ -144,6 +144,7 @@ class _FeaturedState extends State<Featured> {
                     ),
                     featuredVibes(),
                     banner(),
+                    bigBanner(context: context),
                     SizedBox(height: 20,),
                     StreamBuilder(
                       stream: FirebaseFirestore.instance.collection("appSettings").doc("categories").snapshots(),

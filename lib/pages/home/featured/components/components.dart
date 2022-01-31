@@ -120,53 +120,67 @@ class _bannerState extends State<banner> {
   Widget build(BuildContext context) {
     var width=MediaQuery.of(context).size.width;
     var height=MediaQuery.of(context).size.height;
-    return Column(
-      children: [
-        Container(
-          height: height*0.23,
-          child: PageView(
-            scrollDirection: Axis.horizontal,
-            onPageChanged: (page){
-              setState(() {
-                currentPage=page;
-              });
-            },
-            children: [
-              Center(
-                  child: Image.asset(
-                    "assets/featured/slide1.png",
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection("appSettings").doc("images").snapshots(),
+      builder: (context, snapshot) {
+        if(snapshot.hasData){
+          var data=snapshot.data.data();
+          List bannerImages=data["bannerImages"];
+          List<Widget> bannerImagesSorted=[];
+          List<Widget> tickerList=[];
+          bannerImages.asMap().forEach((index,element) {
+
+            bannerImagesSorted.add(
+              Container(
+                  child: Image.network(
+                    "${element}",
                     width: width ,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                   )
               ),
-              Center(
-                  child: Image.asset(
-                    "assets/featured/slide2.png",
-                    width: width,
-                    fit: BoxFit.cover,
-                  )
+            );
+
+            tickerList.add(
+              Container(
+                margin: EdgeInsets.only(right:5),
+                  child: Icon(Icons.circle,color: currentPage==index?Colors.orange:Colors.white,size: 12,)
               ),
-              Center(
-                  child: Image.asset(
-                    "assets/featured/slide3.png",
-                    width: width,
-                    fit: BoxFit.cover,
-                  )
+            );
+
+
+          });
+
+
+          print("printing banner images");
+          print(bannerImages);
+
+          return Column(
+            children: [
+              Container(
+                height: height*0.23,
+                padding: EdgeInsets.all(5),
+                margin: EdgeInsets.only(top: 10,bottom: 5),
+                child: PageView(
+                  scrollDirection: Axis.horizontal,
+                  onPageChanged: (page){
+                    setState(() {
+                      currentPage=page;
+                    });
+                  },
+                  children: bannerImagesSorted
+                ),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: tickerList
+              )
             ],
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.circle,color: currentPage==0?Colors.orange:Colors.white,size: 12,),
-            SizedBox(width: 5,),
-            Icon(Icons.circle,color: currentPage==1?Colors.orange:Colors.white,size: 12,),
-            SizedBox(width: 5,),
-            Icon(Icons.circle,color:currentPage==2?Colors.orange:Colors.white, size: 12,),
-          ],
-        )
-      ],
+          );
+        }
+        else{
+          return Container();
+        }
+      }
     );
   }
 }
@@ -245,9 +259,23 @@ categoryRow({@required BuildContext context,@required List categoryData,@require
 
 
 bigBanner({@required BuildContext context}){
-  return Container(
-      width: MediaQuery.of(context).size.width*0.8,
-      padding: EdgeInsets.all(16),
-      child: Image.asset("assets/featured/banner.png",fit: BoxFit.cover,)
+  return StreamBuilder(
+    stream: FirebaseFirestore.instance.collection("appSettings").doc("images").snapshots(),
+    builder: (context, snapshot) {
+
+      if(snapshot.hasData){
+        var data=snapshot.data.data();
+        return Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(16),
+            margin: EdgeInsets.only(top:10),
+            child: Image.network("${data["banner"]}",fit: BoxFit.contain,)
+        );
+      }
+      else{
+        return Container();
+      }
+
+    }
   );
 }
