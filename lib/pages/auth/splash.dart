@@ -24,10 +24,10 @@ class _SplashState extends State<Splash> {
   String url = "";
 
   void initDynamicLinks() async {
-    print("called link");
+    try{
+      print("called link");
 
-    final PendingDynamicLinkData data =
-        await FirebaseDynamicLinks.instance.getInitialLink();
+    final PendingDynamicLinkData data =await FirebaseDynamicLinks.instance.getInitialLink();
     final Uri deepLink = data.link;
 
     if (deepLink != null) {
@@ -46,6 +46,10 @@ class _SplashState extends State<Splash> {
     }, onError: (OnLinkErrorException e) async {
       print(e.message);
     });
+    }
+    catch(e){
+      print(e);
+    }
   }
 
   handleDynamicLink(Uri url) async {

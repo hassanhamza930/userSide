@@ -266,7 +266,7 @@ class _walletState extends State<wallet> {
                               if(amount.text!="" && mobileNumber.text!="" && provider!=""){
                                 amount.clear();
                                 mobileNumber.clear();
-                                var res= await payout(target: "user", amount:  int.parse(amount.text), number: mobileNumber.text , id: FirebaseAuth.instance.currentUser.uid, provider: provider);
+                                var res= await payout(target: "user", amount: int.parse(amount.text.trim()), number: mobileNumber.text , id: FirebaseAuth.instance.currentUser.uid, provider: provider);
                                 Navigator.pop(context);
                                 showMessage(context: context, message: res["message"]);
                               }

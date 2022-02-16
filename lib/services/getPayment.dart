@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 import 'package:userside/pages/home/celebrityProfile/sendMessage/celebrityChat.dart';
 import 'package:userside/pages/home/home.dart';
