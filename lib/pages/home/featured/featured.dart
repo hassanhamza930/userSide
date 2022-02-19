@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:userside/pages/home/featured/components/automatedCategories.dart';
 
 import 'components/components.dart';
 import 'package:userside/pages/home/featured/components/celebrityContainer.dart';
@@ -157,7 +158,6 @@ class _FeaturedState extends State<Featured> {
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (context,index){
                                 return categoryRow(context: context,categoryData: data[index]["celebrities"],categoryName: data[index]["name"]);
-                                  Text("${data[index]["name"]}");
                               }
                           );
                         }
@@ -166,6 +166,7 @@ class _FeaturedState extends State<Featured> {
                         }
                       }
                     ),
+                    automatedCategories(),
                     SizedBox(height: 50,),
 
                   ],

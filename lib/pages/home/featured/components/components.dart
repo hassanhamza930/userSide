@@ -196,10 +196,12 @@ categoryRow({@required BuildContext context,@required List categoryData,@require
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              categoryName,
-              textAlign: TextAlign.left,
-              style: medium(color: Colors.white),
+            Flexible(
+              child: Text(
+                categoryName,
+                textAlign: TextAlign.left,
+                style: medium(color: Colors.white),
+              ),
             ),
             GestureDetector(
               onTap: (){
@@ -234,7 +236,6 @@ categoryRow({@required BuildContext context,@required List categoryData,@require
                     if(snapshot.hasData){
                       DocumentSnapshot doc=snapshot.data;
                       Map data=doc.data();
-                      print(data);
                       if(data!=null){
                         return celebrityContainer( celebId:categoryData[index],celebData:data);
                       }
