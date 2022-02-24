@@ -49,6 +49,8 @@ class UserSignupService {
               print("created");
 
               await FirebaseFirestore.instance.collection("users").doc(userData.user.uid.toString()).set(userDetails(username: username, email: email, fullName: fullName, phone:phone, dob:dob, password:password,phoneCode: phoneCode,country: country,accountType: "user",imgSrc:"https://www.cprime.com/wp-content/static/images/blog/default-avatar-250x250.png",wallet:0.0 ).toJson(),SetOptions(merge: true));
+              await FirebaseFirestore.instance.collection("users").doc(userData.user.uid.toString()).set({"createdAt":DateTime.now()},SetOptions(merge: true));
+
               await SaveDeviceToken(userData.user.uid.toString());
 
 
