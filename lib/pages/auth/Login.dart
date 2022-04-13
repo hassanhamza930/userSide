@@ -124,6 +124,7 @@ class _LoginState extends State<Login> {
                     ),
                     authButton(text: "Login", color: Colors.white, bg: Colors.orange, onPress: ()async{
 
+                    try{
                       showLoading(context: context);
 
 
@@ -145,6 +146,10 @@ class _LoginState extends State<Login> {
                         Navigator.pop(context);
                         showErrorDialogue(context: context, message: status["message"].toString());
                       }
+                    }
+                    catch(e){
+                      showErrorDialogue(context: context, message: e.toString());
+                    }
 
 
                    }, context: context),

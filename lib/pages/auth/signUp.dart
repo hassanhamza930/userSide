@@ -273,40 +273,46 @@ class _SignUpState extends State<SignUp> {
                           onPress: () async {
 
 
-                            await showLoading(context: context);
-
-                            var codeResponse=await checkSignupBonusCode(hasReferral: hasReferral, referral: referral.text);
-
-                            Navigator.of(context).pop();
-
-                            if(codeResponse=="error"){
-                              showErrorDialogue(context: context, message: "Kindly Enter Valid Promo Code");
-                            }
-                            else{
+                            try{
                               await showLoading(context: context);
 
-                              Map response= await UserSignupService().signupWithData(username:username.text, email:email.text, fullName:fullName.text, phoneCode:countryCode, phone:phone, dob:dob, password:password.text,country:country);
+                              var codeResponse=await checkSignupBonusCode(hasReferral: hasReferral, referral: referral.text);
+
+                              Navigator.of(context).pop();
+
+                              if(codeResponse=="error"){
+                                showErrorDialogue(context: context, message: "Kindly Enter Valid Promo Code");
+                              }
+                              else{
+                                await showLoading(context: context);
+
+                                Map response= await UserSignupService().signupWithData(username:username.text, email:email.text, fullName:fullName.text, phoneCode:countryCode, phone:phone, dob:dob, password:password.text,country:country);
                                 if ( response != null && response["message"] == "created") {
-                                print("created the account");
+                                  print("created the account");
 
-                                Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
 
-                                Navigator.of(context)
-                                    .pushAndRemoveUntil(
-                                    CupertinoPageRoute(builder: (context){
-                                      return NotificationPermission();
-                                    }), (Route<dynamic> route) => false);
+                                  Navigator.of(context)
+                                      .pushAndRemoveUntil(
+                                      CupertinoPageRoute(builder: (context){
+                                        return NotificationPermission();
+                                      }), (Route<dynamic> route) => false);
 
 
-                                if(hasReferral==true){
-                                await addToWallet(amount: 15, id: referral.text.trim(), type: "users");
-                                }
+                                  if(hasReferral==true){
+                                    await addToWallet(amount: 15, id: referral.text.trim(), type: "users");
+                                  }
                                 }
                                 else {
                                   Navigator.of(context).pop();
                                   showErrorDialogue(context: context, message: "${response == null ? "Kindly Fill All Fields Properly" : response["message"]}");
                                 }
+                              }
                             }
+                            catch(e){
+                              showErrorDialogue(context: context, message: e.toString());
+                                }
+
                           },
                         context: context
                         ),
