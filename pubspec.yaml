@@ -59,6 +59,10 @@ dependencies:
   clipboard_manager:
   location: ^4.2.0
   camera:
+    git:
+      url: https://github.com/flutter/plugins
+      path: packages/camera/camera
+      ref: 9e46048ad2e1f085c1e8f6c77391fa52025e681f
   path: ^1.8.0
   path_provider:
   chewie:

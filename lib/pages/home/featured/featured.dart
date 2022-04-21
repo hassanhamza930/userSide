@@ -145,21 +145,54 @@ class _FeaturedState extends State<Featured> {
                     ),
                     featuredVibes(),
                     banner(),
-                    bigBanner(context: context),
+                    // bigBanner(context: context),
                     SizedBox(height: 20,),
                     StreamBuilder(
                       stream: FirebaseFirestore.instance.collection("appSettings").doc("categories").snapshots(),
                       builder: (context, snapshot) {
                         if(snapshot.hasData){
                           var data=snapshot.data["categories"];
-                          return ListView.builder(
-                            shrinkWrap: true,
-                              itemCount: data.length,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context,index){
-                                return categoryRow(context: context,categoryData: data[index]["celebrities"],categoryName: data[index]["name"]);
+                          int elLength=data.length;
+                          List<Widget> listData=[];
+
+                          for(int i=0;i<elLength;i++){
+                            listData.add(
+                                categoryRow(context: context,categoryData: data[i]["celebrities"],categoryName: data[i]["name"])
+                            );
+                          }
+
+                          var i=1;
+                          var loop=true;
+                          while(loop){
+                            if(i<elLength){
+                              if(i%3==0){
+                                listData.insert(i, bigBanner(context: context));
                               }
+                              i++;
+                            }
+                            else{
+                              loop=false;
+                            }
+
+                          }
+
+
+                          return ListView(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: listData,
                           );
+
+                          // return ListView.builder(
+                          //   shrinkWrap: true,
+                          //     itemCount: data.length,
+                          //     physics: NeverScrollableScrollPhysics(),
+                          //     itemBuilder: (context,index){
+                          //
+                          //         return categoryRow(context: context,categoryData: data[index]["celebrities"],categoryName: data[index]["name"]);
+                          //
+                          //     }
+                          // );
                         }
                         else{
                           return Container();

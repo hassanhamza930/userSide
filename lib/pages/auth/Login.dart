@@ -127,15 +127,12 @@ class _LoginState extends State<Login> {
                     try{
                       showLoading(context: context);
 
-
                       var status=await userLogin(email: email.text,password: password.text);
 
                       if(status["message"]=="signed in"){
 
-
                         Navigator.pop(context);
-                        Navigator.of(context)
-                            .pushAndRemoveUntil(CupertinoPageRoute(builder: (context){return Home();}), (Route<dynamic> route) => false);
+                        Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context){return Home();}), (Route<dynamic> route) => false);
 
                         // Navigator.push(context,
                         //     CupertinoPageRoute(builder: (context) {
@@ -150,7 +147,6 @@ class _LoginState extends State<Login> {
                     catch(e){
                       showErrorDialogue(context: context, message: e.toString());
                     }
-
 
                    }, context: context),
                     SizedBox(

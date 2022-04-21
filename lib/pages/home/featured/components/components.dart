@@ -270,7 +270,7 @@ bigBanner({@required BuildContext context}){
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.all(16),
             margin: EdgeInsets.only(top:10),
-            child: Image.network("${data["banner"]}",fit: BoxFit.contain,)
+            child: Image.network("${data["banner"][1]}",fit: BoxFit.contain,)
         );
       }
       else{
