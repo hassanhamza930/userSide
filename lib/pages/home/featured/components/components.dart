@@ -259,7 +259,7 @@ categoryRow({@required BuildContext context,@required List categoryData,@require
 }
 
 
-bigBanner({@required BuildContext context,index=0}){
+bigBanner({BuildContext context,index=0}){
   return StreamBuilder(
     stream: FirebaseFirestore.instance.collection("appSettings").doc("images").snapshots(),
     builder: (context, snapshot) {

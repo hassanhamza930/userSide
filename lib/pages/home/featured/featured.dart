@@ -179,7 +179,26 @@ class _FeaturedState extends State<Featured> {
                         }
                       }
                     ),
-                    automatedCategories(),
+                    FutureBuilder(
+                      future: automatedCategories(context: context),
+                      builder: (context,future) {
+                        if(future.hasData){
+                          var automatedCategoriesList=future.data;
+                          return ListView(
+                            children: automatedCategoriesList,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                          );
+                        }
+                        else{
+                          return Container(
+                            // width: 500,
+                            // height: 500,
+                            // color: Colors.red,
+                          );
+                        }
+                      }
+                    ),
                     SizedBox(height: 50,),
 
                   ],

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:userside/pages/home/featured/components/components.dart';
 
+
 var categories = [
   "Music Stars",
   "Film Stars",
@@ -24,76 +25,78 @@ var categories = [
   "Political & Religious Leaders",
 ];
 
-class automatedCategories extends StatefulWidget {
-  @override
-  _automatedCategoriesState createState() => _automatedCategoriesState();
-}
 
-class _automatedCategoriesState extends State<automatedCategories> {
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> automatedCategoriesList = [];
 
-    var totalAds=0;
 
-    for (var i = 0; i < categories.length; i++) {
 
-      automatedCategoriesList.add(
-          StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("celebrities")
-                  .where("interests", arrayContains: "${categories[i]}")
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<DocumentSnapshot> docs = snapshot.data.docs;
-                  var celebs = [];
-                  docs.forEach((element) {
-                    var data = element.id;
-                    celebs.add(data);
-                  });
+Future<List<Widget>> automatedCategories({@required BuildContext context})async{
+  List<Widget> automatedCategoriesList = [];
 
-                  if (celebs.length > 0) {
-                    setState(() {
-                      totalAds=totalAds+1;
-                    });
-                    return categoryRow(
-                        context: context,
-                        categoryData: celebs,
-                        categoryName: "${categories[i]}");
-                  } else {
 
-                    return Container();
-                  }
-                } else {
-                  return Container();
-                }
-              })
+  List<Widget> finalList=[];
+
+  for (var i = 0; i < categories.length; i++) {
+
+    var data= await FirebaseFirestore.instance.collection("celebrities").where("interests", arrayContains: "${categories[i]}").get();
+
+    if (data.docs.length > 0) {
+      finalList.add(
+          categoryRow(
+              context: context,
+              categoryData: data.docs,
+              categoryName: "${categories[i]}")
       );
-
     }
-
-
-    var i=0;
-    var loop=true;
-    while(loop){
-      if(i<totalAds){
-        print("Adding ads");
-        if(i%3==0){
-          automatedCategoriesList.insert(i, bigBanner(context: context));
-        }
-        i++;
-      }
-      else{
-        loop=false;
-      }
-    }
-
-    return ListView(
-      children: automatedCategoriesList,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-    );
 
   }
+
+  DocumentSnapshot imageDoc=await FirebaseFirestore.instance.collection("appSettings").doc("images").get();
+  Map imageData=imageDoc.data();
+  var imageLength=imageData["banner"].length;
+
+
+  var bannerIndex=0;
+  var i=0;
+  var loop=true;
+  while(loop){
+
+    if(i<finalList.length){
+      print("Adding ads");
+      if(i%3==0){
+        if(bannerIndex==imageLength){
+          finalList.insert(i, bigBanner(context: context,index:0));
+          bannerIndex=0;
+        }
+        else{
+          finalList.insert(i, bigBanner(context: context,index:bannerIndex));
+          bannerIndex+=1;
+        }
+      }
+
+      i++;
+    }
+
+    else{
+      loop=false;
+    }
+
+  }
+
+  return finalList;
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
