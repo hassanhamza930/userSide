@@ -259,7 +259,7 @@ categoryRow({@required BuildContext context,@required List categoryData,@require
 }
 
 
-bigBanner({@required BuildContext context}){
+bigBanner({@required BuildContext context,index=0}){
   return StreamBuilder(
     stream: FirebaseFirestore.instance.collection("appSettings").doc("images").snapshots(),
     builder: (context, snapshot) {
@@ -270,7 +270,7 @@ bigBanner({@required BuildContext context}){
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.all(16),
             margin: EdgeInsets.only(top:10),
-            child: Image.network("${data["banner"][1]}",fit: BoxFit.contain,)
+            child: Image.network("${data["banner"][index]}",fit: BoxFit.contain,)
         );
       }
       else{

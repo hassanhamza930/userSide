@@ -14,40 +14,7 @@ import "package:flutter/cupertino.dart";import 'package:flutter/cupertino.dart';
 
 
 
-var featuredData=[
-  {
-    'imgSrc':"assets/featured/featuredVibe1.png",
-    'name':"Thomas Curtis"
-  },
-  {
-    'imgSrc':"assets/featured/featuredVibe1.png",
-    'name':"StoneBwoy"
-  },
-  {
-    'imgSrc':"assets/featured/featuredVibe1.png",
-    'name':"Jackie Appiah"
-  },
-];
 
-
-var categoryData=[
-  {
-    'imgSrc':"assets/featured/celebrityStoneBoy.png",
-    'name':"Stone Bwoy"
-  },
-  {
-    'imgSrc':"assets/featured/celebrityStoneBoy.png",
-    'name':"Jackie Appiah"
-  },
-  {
-    'imgSrc':"assets/featured/celebrityStoneBoy.png",
-    'name':"Daniels"
-  },
-  {
-    'imgSrc':"assets/featured/celebrityStoneBoy.png",
-    'name':"Chad"
-  },
-];
 
 
 class Featured extends StatefulWidget {
@@ -148,51 +115,64 @@ class _FeaturedState extends State<Featured> {
                     // bigBanner(context: context),
                     SizedBox(height: 20,),
                     StreamBuilder(
-                      stream: FirebaseFirestore.instance.collection("appSettings").doc("categories").snapshots(),
-                      builder: (context, snapshot) {
-                        if(snapshot.hasData){
-                          var data=snapshot.data["categories"];
-                          int elLength=data.length;
-                          List<Widget> listData=[];
+                      stream:FirebaseFirestore.instance.collection("appSettings").doc("images").snapshots(),
+                      builder: (context,appImagesSnap) {
+                        if(appImagesSnap.hasData){
+                          DocumentSnapshot doc=appImagesSnap.data;
+                          Map adsData=doc.data();
 
-                          for(int i=0;i<elLength;i++){
-                            listData.add(
-                                categoryRow(context: context,categoryData: data[i]["celebrities"],categoryName: data[i]["name"])
-                            );
-                          }
+                          return StreamBuilder(
+                              stream: FirebaseFirestore.instance.collection("appSettings").doc("categories").snapshots(),
+                              builder: (context, snapshot) {
+                                if(snapshot.hasData){
+                                  var data=snapshot.data["categories"];
+                                  int elLength=data.length;
+                                  List<Widget> listData=[];
 
-                          var i=1;
-                          var loop=true;
-                          while(loop){
-                            if(i<elLength){
-                              if(i%3==0){
-                                listData.insert(i, bigBanner(context: context));
+                                  for(int i=0;i<elLength;i++){
+                                    listData.add(
+                                        categoryRow(context: context,categoryData: data[i]["celebrities"],categoryName: data[i]["name"])
+                                    );
+                                  }
+
+                                  var totalAds=adsData["banner"].length;
+                                  var current=0;
+
+                                  var i=0;
+                                  var loop=true;
+                                  while(loop){
+                                    if(i<listData.length){
+                                      if(i%4==0 && i!=0){
+                                        if(current==totalAds){
+                                          listData.insert(i, bigBanner(context: context,index:0));
+                                          current=0;
+                                        }
+                                        else{
+                                          listData.insert(i, bigBanner(context: context,index: current));
+                                        }
+                                        current+=1;
+                                      }
+                                      i++;
+                                    }
+                                    else{
+                                      loop=false;
+                                    }
+
+                                  }
+
+
+                                  return ListView(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    children: listData,
+                                  );
+
+                                }
+                                else{
+                                  return Container();
+                                }
                               }
-                              i++;
-                            }
-                            else{
-                              loop=false;
-                            }
-
-                          }
-
-
-                          return ListView(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            children: listData,
                           );
-
-                          // return ListView.builder(
-                          //   shrinkWrap: true,
-                          //     itemCount: data.length,
-                          //     physics: NeverScrollableScrollPhysics(),
-                          //     itemBuilder: (context,index){
-                          //
-                          //         return categoryRow(context: context,categoryData: data[index]["celebrities"],categoryName: data[index]["name"]);
-                          //
-                          //     }
-                          // );
                         }
                         else{
                           return Container();

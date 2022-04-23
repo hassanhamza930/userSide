@@ -310,6 +310,7 @@ class _SignUpState extends State<SignUp> {
                               }
                             }
                             catch(e){
+                              Navigator.pop(context);
                               showErrorDialogue(context: context, message: e.toString());
                                 }
 

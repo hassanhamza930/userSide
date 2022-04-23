@@ -145,6 +145,8 @@ class _LoginState extends State<Login> {
                       }
                     }
                     catch(e){
+                      Navigator.pop(context);
+
                       showErrorDialogue(context: context, message: e.toString());
                     }
 
