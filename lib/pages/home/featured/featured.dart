@@ -191,10 +191,12 @@ class _FeaturedState extends State<Featured> {
                           );
                         }
                         else{
-                          return Container(
-                            // width: 500,
-                            // height: 500,
-                            // color: Colors.red,
+                          return Center(
+                            child: Container(
+                                height: 50,
+                                width: 50,
+                                child: CircularProgressIndicator()
+                            ),
                           );
                         }
                       }

@@ -39,11 +39,17 @@ Future<List<Widget>> automatedCategories({@required BuildContext context})async{
 
     var data= await FirebaseFirestore.instance.collection("celebrities").where("interests", arrayContains: "${categories[i]}").get();
 
+    var categData=[];
+    for(int i=0;i<data.docs.length;i++){
+      categData.add(data.docs[i].id);
+    }
+
+
     if (data.docs.length > 0) {
       finalList.add(
           categoryRow(
               context: context,
-              categoryData: data.docs,
+              categoryData: categData,
               categoryName: "${categories[i]}")
       );
     }
